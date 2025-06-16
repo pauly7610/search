@@ -1,0 +1,38 @@
+.helpPage {
+  padding: 32px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  min-height: 80vh;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.faqSection {
+  margin-bottom: 32px;
+}
+
+.faqSection h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.faqSection ul {
+  list-style: disc inside;
+  color: #444;
+  margin-left: 20px;
+}
+
+.contactSection h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.placeholder {
+  color: #888;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 24px;
+}

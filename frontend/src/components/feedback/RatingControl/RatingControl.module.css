@@ -1,0 +1,30 @@
+/* RatingControl styles */
+
+.ratingControl {
+  display: flex;
+  gap: 4px;
+}
+
+.ratingButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.ratingButton.active {
+  color: #ffd700;
+}
+
+.sm .ratingButton {
+  font-size: 16px;
+}
+
+.md .ratingButton {
+  font-size: 24px;
+}
+
+.lg .ratingButton {
+  font-size: 32px;
+}

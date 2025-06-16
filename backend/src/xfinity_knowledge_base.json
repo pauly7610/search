@@ -1,0 +1,779 @@
+{
+    "knowledge_base": {
+      "name": "Xfinity Customer Support Knowledge Base",
+      "description": "Comprehensive knowledge base for three specialized agent types: Tech Support, Billing, and General",
+      "version": "1.0",
+      "last_updated": "2025-06-16",
+      "agents": {
+        "tech_support": {
+          "name": "Tech Support Agent",
+          "description": "Handles technical issues, troubleshooting, and equipment support",
+          "categories": {
+            "modem_reset": {
+              "question": "How do I reset my Xfinity modem?",
+              "responses": [
+                {
+                  "id": "modem_reset_1",
+                  "type": "basic_power_reset",
+                  "content": "To reset your Xfinity modem or gateway, unplug the power cable from the device, wait at least 10 seconds, and then plug it back in. Wait 2-3 minutes for the modem to fully reboot. You should see the lights stabilize when it's ready - typically a solid white light indicates normal operation.",
+                  "keywords": ["reset", "modem", "power", "reboot", "lights"]
+                },
+                {
+                  "id": "modem_reset_2",
+                  "type": "remote_restart",
+                  "content": "You can restart your modem remotely using the Xfinity app or website: 1. Log in to your Xfinity account 2. Navigate to the Internet section 3. Select your modem/gateway device 4. Choose 'Restart this device'. This process takes approximately 12 minutes and will temporarily disconnect your internet during the restart.",
+                  "keywords": ["remote", "app", "website", "restart", "xfinity account"]
+                },
+                {
+                  "id": "modem_reset_3",
+                  "type": "factory_reset",
+                  "content": "If you need to factory reset your modem (to reset admin passwords or clear custom settings), locate the reset button (usually a small recessed hole) on the back of the device. Press and hold it with a paperclip for 10-15 seconds while the device is powered on. This will erase all custom settings and return the modem to factory defaults.",
+                  "keywords": ["factory reset", "admin password", "paperclip", "custom settings"]
+                },
+                {
+                  "id": "modem_reset_4",
+                  "type": "troubleshooting",
+                  "content": "If your modem doesn't respond to a reset, check that the power cable is securely connected and try a different power outlet. If the lights remain red or orange after reset, there may be a service outage or hardware issue requiring technician support.",
+                  "keywords": ["troubleshooting", "power cable", "red lights", "orange lights", "technician"]
+                },
+                {
+                  "id": "modem_reset_5",
+                  "type": "when_to_reset",
+                  "content": "Consider resetting your modem when experiencing slow internet speeds, frequent disconnections, inability to connect new devices, or after power outages. A weekly reset can help maintain optimal performance.",
+                  "keywords": ["slow internet", "disconnections", "new devices", "power outages", "maintenance"]
+                }
+              ]
+            },
+            "slow_internet": {
+              "question": "What should I do if my internet is slow?",
+              "responses": [
+                {
+                  "id": "slow_internet_1",
+                  "type": "basic_troubleshooting",
+                  "content": "First, try restarting your modem and router. Unplug both devices for 30 seconds, then plug in the modem first, wait 2 minutes, then plug in the router. This clears temporary issues and refreshes your connection.",
+                  "keywords": ["restart", "modem", "router", "unplug", "refresh connection"]
+                },
+                {
+                  "id": "slow_internet_2",
+                  "type": "wifi_optimization",
+                  "content": "Check for Wi-Fi interference by moving your router to a central, elevated location away from walls, microwaves, baby monitors, and other electronics. Ensure your device is within 30 feet of the router for optimal signal strength.",
+                  "keywords": ["wifi interference", "router placement", "central location", "signal strength"]
+                },
+                {
+                  "id": "slow_internet_3",
+                  "type": "speed_testing",
+                  "content": "Run a speed test using the Xfinity app, xfinity.com/speedtest, or third-party tools like Speedtest.net. Test both wired and wireless connections to identify if the issue is with your WiFi or internet service. Compare results to your plan's advertised speeds.",
+                  "keywords": ["speed test", "xfinity app", "speedtest.net", "wired", "wireless", "advertised speeds"]
+                },
+                {
+                  "id": "slow_internet_4",
+                  "type": "device_management",
+                  "content": "Disconnect unused devices from your network as too many connected devices can slow performance. Check if any devices are running updates, streaming, or downloading large files that could consume bandwidth.",
+                  "keywords": ["device management", "connected devices", "bandwidth", "updates", "streaming"]
+                },
+                {
+                  "id": "slow_internet_5",
+                  "type": "network_congestion",
+                  "content": "Internet speeds may slow during peak usage hours (6-11 PM) due to neighborhood congestion. Consider upgrading to a higher-speed plan if you consistently experience slowdowns during these times.",
+                  "keywords": ["peak hours", "network congestion", "neighborhood", "upgrade plan"]
+                },
+                {
+                  "id": "slow_internet_6",
+                  "type": "equipment_issues",
+                  "content": "Check ethernet cables for damage and ensure they're CAT5e or higher. Older routers (3+ years) may not support your current internet speeds and could require upgrading.",
+                  "keywords": ["ethernet cables", "CAT5e", "older routers", "equipment upgrade"]
+                },
+                {
+                  "id": "slow_internet_7",
+                  "type": "advanced_troubleshooting",
+                  "content": "Clear your browser cache and cookies, update your device's network drivers, and check for malware that could be consuming bandwidth. Consider using a different DNS server (like 8.8.8.8 or 1.1.1.1) for potentially faster browsing.",
+                  "keywords": ["browser cache", "network drivers", "malware", "DNS server", "8.8.8.8"]
+                }
+              ]
+            },
+            "outage_check": {
+              "question": "How do I check for outages in my area?",
+              "responses": [
+                {
+                  "id": "outage_check_1",
+                  "type": "official_status",
+                  "content": "Visit the Xfinity Status Center at xfinity.com/support/status or use the Xfinity app. Enter your address or log in to see real-time outage reports, affected services, and estimated resolution times for your specific area.",
+                  "keywords": ["status center", "xfinity app", "real-time", "outage reports", "resolution times"]
+                },
+                {
+                  "id": "outage_check_2",
+                  "type": "notifications",
+                  "content": "Sign up for text notifications about outages by visiting the Status Center and entering your mobile number. You'll receive automatic updates when outages are detected and when service is restored.",
+                  "keywords": ["text notifications", "mobile number", "automatic updates", "service restored"]
+                },
+                {
+                  "id": "outage_check_3",
+                  "type": "social_media",
+                  "content": "Check Xfinity's official Twitter account (@Xfinity) for widespread outage updates and customer service responses. Local Facebook groups and neighborhood apps like Nextdoor often have real-time outage discussions.",
+                  "keywords": ["twitter", "@xfinity", "facebook groups", "nextdoor", "social media"]
+                },
+                {
+                  "id": "outage_check_4",
+                  "type": "third_party",
+                  "content": "Use websites like DownDetector.com or IsItDownRightNow.com to see user-reported outages and compare your experience with others in your area.",
+                  "keywords": ["downdetector", "isitdownrightnow", "user-reported", "third party"]
+                },
+                {
+                  "id": "outage_check_5",
+                  "type": "no_outage_reported",
+                  "content": "If no outage is reported but you're experiencing issues, the problem may be localized to your equipment or neighborhood node. Try power cycling your equipment first, then contact support if issues persist.",
+                  "keywords": ["no outage", "localized", "neighborhood node", "power cycling", "contact support"]
+                }
+              ]
+            },
+            "wifi_signal": {
+              "question": "How do I improve my Wi-Fi signal?",
+              "responses": [
+                {
+                  "id": "wifi_signal_1",
+                  "type": "router_placement",
+                  "content": "Position your router in a central, elevated location (like a shelf or table) away from walls, floors, and enclosed spaces. Avoid placing it near metal objects, mirrors, or appliances that can interfere with the signal.",
+                  "keywords": ["router placement", "central location", "elevated", "metal objects", "interference"]
+                },
+                {
+                  "id": "wifi_signal_2",
+                  "type": "extenders_pods",
+                  "content": "Use Xfinity xFi Pods or third-party WiFi extenders to expand coverage to dead zones. Place pods halfway between your router and the area needing better coverage, avoiding obstacles like walls and furniture.",
+                  "keywords": ["xfi pods", "wifi extenders", "dead zones", "coverage", "obstacles"]
+                },
+                {
+                  "id": "wifi_signal_3",
+                  "type": "channel_optimization",
+                  "content": "Use the Xfinity app to optimize your WiFi channels automatically, or manually select less congested channels (1, 6, or 11 for 2.4GHz) if you have an older router.",
+                  "keywords": ["channel optimization", "xfinity app", "2.4ghz", "congested channels"]
+                },
+                {
+                  "id": "wifi_signal_4",
+                  "type": "antenna_adjustment",
+                  "content": "If your router has external antennas, position them perpendicular to each other - one vertical and one horizontal - to maximize coverage in all directions.",
+                  "keywords": ["external antennas", "perpendicular", "vertical", "horizontal", "coverage"]
+                },
+                {
+                  "id": "wifi_signal_5",
+                  "type": "dual_band",
+                  "content": "Connect devices that need high speeds to the 5GHz band (less congested but shorter range) and devices farther away to the 2.4GHz band (longer range but more congested).",
+                  "keywords": ["dual band", "5ghz", "2.4ghz", "high speeds", "range"]
+                }
+              ]
+            },
+            "gateway_lights": {
+              "question": "What do the lights on my Xfinity gateway mean?",
+              "responses": [
+                {
+                  "id": "gateway_lights_1",
+                  "type": "power_light",
+                  "content": "Power Light meanings: Solid white indicates normal operation, Solid red means no internet connection, Blinking white shows starting up or firmware update, Blinking red indicates failed startup or hardware issue.",
+                  "keywords": ["power light", "solid white", "solid red", "blinking white", "blinking red"]
+                },
+                {
+                  "id": "gateway_lights_2",
+                  "type": "internet_light",
+                  "content": "Internet Light meanings: Solid white means connected to internet, Solid red indicates no internet signal from Xfinity, Blinking white shows connecting to internet, Off indicates no power or hardware failure.",
+                  "keywords": ["internet light", "connected", "no signal", "connecting", "hardware failure"]
+                },
+                {
+                  "id": "gateway_lights_3",
+                  "type": "wifi_light",
+                  "content": "WiFi Light meanings: Solid white indicates WiFi is active and broadcasting, Solid red means WiFi is disabled, Blinking white shows WiFi is starting up, Off indicates WiFi hardware issue.",
+                  "keywords": ["wifi light", "active", "broadcasting", "disabled", "starting up"]
+                },
+                {
+                  "id": "gateway_lights_4",
+                  "type": "ethernet_lights",
+                  "content": "Ethernet Light meanings: Solid green indicates active ethernet connection, Blinking green shows data transmission, Orange/amber indicates connection at reduced speed, Off means no ethernet connection.",
+                  "keywords": ["ethernet lights", "solid green", "blinking green", "orange amber", "reduced speed"]
+                }
+              ]
+            },
+            "device_setup": {
+              "question": "How do I set up a new device on my Xfinity network?",
+              "responses": [
+                {
+                  "id": "device_setup_1",
+                  "type": "wifi_connection",
+                  "content": "Find your network name (SSID) and password on the white sticker on your gateway. On your device, select your network from the WiFi list and enter the password. The network name typically starts with 'HOME-' followed by numbers.",
+                  "keywords": ["network name", "SSID", "password", "white sticker", "HOME-"]
+                },
+                {
+                  "id": "device_setup_2",
+                  "type": "wps_connection",
+                  "content": "For WPS-enabled devices, press the WPS button on your gateway, then activate WPS on your device within 2 minutes. The devices will connect automatically without entering a password.",
+                  "keywords": ["WPS", "WPS button", "2 minutes", "automatic connection"]
+                },
+                {
+                  "id": "device_setup_3",
+                  "type": "ethernet_connection",
+                  "content": "Connect devices directly to your gateway using an ethernet cable for the most stable connection. Plug the cable into any yellow ethernet port on the back of your gateway.",
+                  "keywords": ["ethernet cable", "stable connection", "yellow port", "direct connection"]
+                },
+                {
+                  "id": "device_setup_4",
+                  "type": "guest_network",
+                  "content": "Set up a guest network through the Xfinity app for visitors. This keeps your main network secure while providing internet access to guests.",
+                  "keywords": ["guest network", "xfinity app", "visitors", "secure", "internet access"]
+                }
+              ]
+            },
+            "wifi_password": {
+              "question": "How do I change my WiFi password?",
+              "responses": [
+                {
+                  "id": "wifi_password_1",
+                  "type": "xfinity_app",
+                  "content": "Open the Xfinity app, go to 'Internet' > 'WiFi Settings' > 'Change WiFi Password.' Create a strong password with at least 12 characters including letters, numbers, and symbols.",
+                  "keywords": ["xfinity app", "wifi settings", "strong password", "12 characters", "symbols"]
+                },
+                {
+                  "id": "wifi_password_2",
+                  "type": "web_portal",
+                  "content": "Visit 10.0.0.1 in your browser, log in with admin credentials (found on gateway sticker), navigate to 'Gateway' > 'WiFi' > 'Edit' to change your password.",
+                  "keywords": ["10.0.0.1", "admin credentials", "gateway sticker", "web portal"]
+                },
+                {
+                  "id": "wifi_password_3",
+                  "type": "password_best_practices",
+                  "content": "Use a unique password that's not used for other accounts. Consider using a passphrase with multiple random words for better security and easier memorization.",
+                  "keywords": ["unique password", "passphrase", "random words", "security", "memorization"]
+                }
+              ]
+            }
+          }
+        },
+        "billing": {
+          "name": "Billing Agent",
+          "description": "Handles billing inquiries, payment issues, and account management",
+          "categories": {
+            "bill_increase": {
+              "question": "Why is my bill higher this month?",
+              "responses": [
+                {
+                  "id": "bill_increase_1",
+                  "type": "promotional_expiration",
+                  "content": "Your bill may be higher because an introductory promotional rate expired. Most Xfinity promotions last 12-24 months, after which your service reverts to standard pricing. Check your original service agreement for promotion end dates.",
+                  "keywords": ["promotional rate", "expired", "12-24 months", "standard pricing", "service agreement"]
+                },
+                {
+                  "id": "bill_increase_2",
+                  "type": "service_changes",
+                  "content": "Recent changes to your service plan, such as upgrading internet speed, adding premium channels, or equipment rentals, will appear on your next bill. These changes are prorated based on when they were activated.",
+                  "keywords": ["service changes", "upgrading", "premium channels", "equipment rentals", "prorated"]
+                },
+                {
+                  "id": "bill_increase_3",
+                  "type": "broadcast_fees",
+                  "content": "The Broadcast TV Fee and Regional Sports Network Fee can change quarterly and are separate from your base package price. These fees reflect costs Xfinity pays to content providers and vary by region.",
+                  "keywords": ["broadcast tv fee", "regional sports", "quarterly", "content providers", "region"]
+                },
+                {
+                  "id": "bill_increase_4",
+                  "type": "one_time_charges",
+                  "content": "Look for one-time charges such as installation fees, service calls, equipment purchases, late payment fees, or pay-per-view purchases that may have been added to your bill.",
+                  "keywords": ["one-time charges", "installation fees", "service calls", "late payment", "pay-per-view"]
+                },
+                {
+                  "id": "bill_increase_5",
+                  "type": "tax_surcharge",
+                  "content": "Government taxes and regulatory surcharges can change based on local and federal regulations. These charges are required by law and passed through to customers.",
+                  "keywords": ["government taxes", "regulatory surcharges", "federal regulations", "required by law"]
+                },
+                {
+                  "id": "bill_increase_6",
+                  "type": "usage_overages",
+                  "content": "If you have a data plan with usage limits and exceeded your allowance, overage charges will appear on your bill. Check your data usage in the Xfinity app to monitor consumption.",
+                  "keywords": ["data plan", "usage limits", "overage charges", "data usage", "monitor consumption"]
+                }
+              ]
+            },
+            "online_payment": {
+              "question": "How do I pay my bill online?",
+              "responses": [
+                {
+                  "id": "online_payment_1",
+                  "type": "website_payment",
+                  "content": "Visit xfinity.com and log in to your account. Navigate to 'Billing' > 'Make a Payment.' Select your payment method (checking account, credit/debit card, or prepaid card) and enter the payment amount. You can schedule one-time or recurring payments.",
+                  "keywords": ["xfinity.com", "billing", "make a payment", "payment method", "recurring payments"]
+                },
+                {
+                  "id": "online_payment_2",
+                  "type": "mobile_app",
+                  "content": "Download the Xfinity app, log in, and tap 'Billing.' Select 'Pay Bill' and choose your saved payment method or add a new one. You can pay the full balance or a custom amount.",
+                  "keywords": ["xfinity app", "pay bill", "saved payment", "full balance", "custom amount"]
+                },
+                {
+                  "id": "online_payment_3",
+                  "type": "express_payment",
+                  "content": "For quick payments without logging in, use the Express Pay option on xfinity.com. Enter your account number and payment information for immediate processing.",
+                  "keywords": ["express pay", "account number", "immediate processing", "quick payments"]
+                },
+                {
+                  "id": "online_payment_4",
+                  "type": "payment_methods",
+                  "content": "Accepted payment methods include major credit cards (Visa, MasterCard, American Express, Discover), debit cards with Visa/MasterCard logos, checking accounts, savings accounts, and Xfinity prepaid cards.",
+                  "keywords": ["credit cards", "debit cards", "checking accounts", "savings accounts", "prepaid cards"]
+                },
+                {
+                  "id": "online_payment_5",
+                  "type": "processing_time",
+                  "content": "Credit card payments process immediately, while bank account payments may take 1-2 business days. Payments made after 11:59 PM ET are processed the next business day.",
+                  "keywords": ["credit card", "immediately", "bank account", "1-2 business days", "11:59 PM ET"]
+                }
+              ]
+            },
+            "payment_method": {
+              "question": "How do I change my payment method?",
+              "responses": [
+                {
+                  "id": "payment_method_1",
+                  "type": "online_update",
+                  "content": "Log in to your Xfinity account at xfinity.com, go to 'My Account' > 'Billing' > 'Manage Payment Methods.' Click 'Add Payment Method' to enter new card or bank account details, then set it as your default method.",
+                  "keywords": ["my account", "manage payment methods", "add payment method", "default method"]
+                },
+                {
+                  "id": "payment_method_2",
+                  "type": "mobile_app_update",
+                  "content": "In the Xfinity app, tap 'Account' > 'Billing' > 'Payment Methods.' Add your new payment information and select it as your primary method for future payments and Auto Pay.",
+                  "keywords": ["account", "payment methods", "primary method", "auto pay"]
+                },
+                {
+                  "id": "payment_method_3",
+                  "type": "removing_methods",
+                  "content": "To remove outdated payment methods, go to your payment methods section and click 'Delete' next to the method you want to remove. You must have at least one payment method on file.",
+                  "keywords": ["remove", "delete", "outdated", "at least one method"]
+                },
+                {
+                  "id": "payment_method_4",
+                  "type": "autopay_updates",
+                  "content": "If you use Auto Pay, changing your payment method will automatically update your recurring payments. You'll receive confirmation via email when the change is processed.",
+                  "keywords": ["auto pay", "recurring payments", "confirmation email", "automatically update"]
+                }
+              ]
+            },
+            "autopay_setup": {
+              "question": "How do I set up Auto Pay?",
+              "responses": [
+                {
+                  "id": "autopay_setup_1",
+                  "type": "enrollment",
+                  "content": "Log in to your account and go to 'Billing' > 'Auto Pay.' Select your payment method, choose to pay the full balance or a fixed amount, and select your payment date (due date or an earlier date).",
+                  "keywords": ["auto pay", "payment method", "full balance", "fixed amount", "payment date"]
+                },
+                {
+                  "id": "autopay_setup_2",
+                  "type": "benefits",
+                  "content": "Auto Pay ensures you never miss a payment and may qualify you for paperless billing discounts. You'll still receive bills showing charges before the automatic payment is processed.",
+                  "keywords": ["never miss", "paperless billing", "discounts", "automatic payment"]
+                },
+                {
+                  "id": "autopay_setup_3",
+                  "type": "management",
+                  "content": "You can modify or cancel Auto Pay anytime through your online account. Changes made before your next payment date will take effect immediately.",
+                  "keywords": ["modify", "cancel", "online account", "payment date", "immediately"]
+                },
+                {
+                  "id": "autopay_setup_4",
+                  "type": "backup_methods",
+                  "content": "Consider adding a backup payment method in case your primary method fails. This prevents service interruption and late fees.",
+                  "keywords": ["backup payment", "primary method fails", "service interruption", "late fees"]
+                }
+              ]
+            },
+            "dispute_charge": {
+              "question": "How do I dispute a charge on my bill?",
+              "responses": [
+                {
+                  "id": "dispute_charge_1",
+                  "type": "online_dispute",
+                  "content": "Log in to your account and go to 'Billing' > 'View Bill Details.' Click on the specific charge you want to dispute and select 'Dispute This Charge.' Provide detailed information about why you're disputing the charge.",
+                  "keywords": ["view bill details", "dispute this charge", "detailed information", "specific charge"]
+                },
+                {
+                  "id": "dispute_charge_2",
+                  "type": "phone_dispute",
+                  "content": "Call 1-800-XFINITY and request to speak with a billing specialist. Have your account information and bill details ready, along with any supporting documentation for your dispute.",
+                  "keywords": ["1-800-xfinity", "billing specialist", "account information", "supporting documentation"]
+                },
+                {
+                  "id": "dispute_charge_3",
+                  "type": "documentation",
+                  "content": "Gather relevant documentation such as service appointment confirmations, promotional offer details, or records of previous conversations with Xfinity representatives to support your dispute.",
+                  "keywords": ["documentation", "appointment confirmations", "promotional offers", "conversation records"]
+                },
+                {
+                  "id": "dispute_charge_4",
+                  "type": "timeline",
+                  "content": "Billing disputes are typically resolved within 30 days. You'll receive updates via email or mail regarding the status of your dispute and any bill adjustments.",
+                  "keywords": ["30 days", "email updates", "dispute status", "bill adjustments"]
+                }
+              ]
+            },
+            "payment_assistance": {
+              "question": "What payment assistance programs are available?",
+              "responses": [
+                {
+                  "id": "payment_assistance_1",
+                  "type": "acp_program",
+                  "content": "Low-income households may qualify for the Affordable Connectivity Program (ACP), which provides monthly internet discounts and device discounts. Apply at GetInternet.gov to see if you qualify.",
+                  "keywords": ["affordable connectivity program", "low-income", "monthly discounts", "getinternet.gov"]
+                },
+                {
+                  "id": "payment_assistance_2",
+                  "type": "internet_essentials",
+                  "content": "Xfinity's Internet Essentials program offers low-cost internet for qualifying low-income families. The program includes affordable internet plans and digital literacy training.",
+                  "keywords": ["internet essentials", "low-cost internet", "qualifying families", "digital literacy"]
+                },
+                {
+                  "id": "payment_assistance_3",
+                  "type": "payment_extensions",
+                  "content": "If you're experiencing temporary financial hardship, contact Xfinity to discuss payment extension options or payment arrangements to avoid service disconnection.",
+                  "keywords": ["financial hardship", "payment extension", "payment arrangements", "service disconnection"]
+                },
+                {
+                  "id": "payment_assistance_4",
+                  "type": "military_discounts",
+                  "content": "Active military personnel and veterans may qualify for special pricing and discounts. Contact Xfinity to verify eligibility and apply available discounts to your account.",
+                  "keywords": ["military personnel", "veterans", "special pricing", "verify eligibility"]
+                }
+              ]
+            },
+            "bill_breakdown": {
+              "question": "How do I understand my bill breakdown?",
+              "responses": [
+                {
+                  "id": "bill_breakdown_1",
+                  "type": "service_charges",
+                  "content": "Your bill shows monthly charges for each service (internet, TV, phone) along with any premium channel subscriptions, equipment rentals, and protection plans you've added.",
+                  "keywords": ["monthly charges", "premium channels", "equipment rentals", "protection plans"]
+                },
+                {
+                  "id": "bill_breakdown_2",
+                  "type": "taxes_fees",
+                  "content": "Separate line items show government taxes, regulatory fees, Broadcast TV fees, and Regional Sports Network fees. These charges are determined by local and federal regulations.",
+                  "keywords": ["government taxes", "regulatory fees", "broadcast tv fees", "federal regulations"]
+                },
+                {
+                  "id": "bill_breakdown_3",
+                  "type": "one_time_charges",
+                  "content": "Installation fees, service call charges, equipment purchases, and any pay-per-view or on-demand purchases appear as one-time charges with detailed descriptions.",
+                  "keywords": ["installation fees", "service calls", "equipment purchases", "pay-per-view", "on-demand"]
+                },
+                {
+                  "id": "bill_breakdown_4",
+                  "type": "credits_adjustments",
+                  "content": "Any promotional credits, billing adjustments, or refunds appear as negative amounts on your bill. These may include prorated credits for service changes or billing corrections.",
+                  "keywords": ["promotional credits", "billing adjustments", "refunds", "negative amounts", "prorated"]
+                }
+              ]
+            }
+          }
+        },
+        "general": {
+          "name": "General Agent",
+          "description": "Handles general inquiries, service information, and customer guidance",
+          "categories": {
+            "internet_plans": {
+              "question": "What internet plans are available?",
+              "responses": [
+                {
+                  "id": "internet_plans_1",
+                  "type": "residential_plans",
+                  "content": "Xfinity offers multiple internet speed tiers: Connect (up to 150 Mbps) - ideal for basic browsing and email, Connect More (up to 400 Mbps) - suitable for streaming and gaming, Fast (up to 600 Mbps) - great for multiple devices and 4K streaming, Gigabit (up to 1,200 Mbps) - perfect for heavy usage and smart homes, Gigabit Extra (up to 1,300 Mbps) - premium speed for power users.",
+                  "keywords": ["speed tiers", "150 mbps", "400 mbps", "600 mbps", "1200 mbps", "1300 mbps"]
+                },
+                {
+                  "id": "internet_plans_2",
+                  "type": "business_plans",
+                  "content": "Xfinity Business offers dedicated plans with guaranteed speeds: Business Internet Starter (up to 25 Mbps upload and download), Business Internet Performance (up to 100 Mbps), Business Internet Pro (up to 200 Mbps), Business Ethernet (dedicated fiber connections up to 10 Gbps).",
+                  "keywords": ["business plans", "guaranteed speeds", "25 mbps", "100 mbps", "200 mbps", "10 gbps"]
+                },
+                {
+                  "id": "internet_plans_3",
+                  "type": "plan_features",
+                  "content": "All residential plans include unlimited data, advanced WiFi equipment, access to millions of Xfinity WiFi hotspots, and security software. Equipment is included for qualified customers.",
+                  "keywords": ["unlimited data", "wifi equipment", "wifi hotspots", "security software", "qualified customers"]
+                },
+                {
+                  "id": "internet_plans_4",
+                  "type": "promotional_offers",
+                  "content": "New customers often qualify for promotional pricing, free installation, and premium channel trials. Current promotions vary by location and are available for qualifying new customers.",
+                  "keywords": ["promotional pricing", "free installation", "premium channels", "new customers", "location"]
+                },
+                {
+                  "id": "internet_plans_5",
+                  "type": "plan_comparisons",
+                  "content": "Higher-speed plans support more simultaneous users, faster downloads, better video conferencing quality, and reduced buffering. Consider your household size and usage when selecting a plan.",
+                  "keywords": ["simultaneous users", "faster downloads", "video conferencing", "household size", "usage"]
+                }
+              ]
+            },
+            "store_locator": {
+              "question": "Where is the nearest Xfinity store?",
+              "responses": [
+                {
+                  "id": "store_locator_1",
+                  "type": "locator_tool",
+                  "content": "Visit xfinity.com/storelocator and enter your zip code, city, or address to find nearby Xfinity stores. The tool shows store addresses, phone numbers, hours, and available services.",
+                  "keywords": ["store locator", "zip code", "addresses", "phone numbers", "hours", "services"]
+                },
+                {
+                  "id": "store_locator_2",
+                  "type": "store_services",
+                  "content": "Xfinity stores offer equipment pickup and returns, bill payments, new service sign-ups, plan changes, technical support, and demonstrations of new products and services.",
+                  "keywords": ["equipment pickup", "bill payments", "sign-ups", "plan changes", "technical support", "demonstrations"]
+                },
+                {
+                  "id": "store_locator_3",
+                  "type": "appointments",
+                  "content": "Many stores accept appointments for faster service. Use the store locator to book appointments online or call the store directly to schedule your visit.",
+                  "keywords": ["appointments", "faster service", "book online", "schedule visit"]
+                },
+                {
+                  "id": "store_locator_4",
+                  "type": "alternative_locations",
+                  "content": "Some services are available at authorized retailers like Best Buy, Target, and local authorized dealers. Check the store locator for these additional locations.",
+                  "keywords": ["authorized retailers", "best buy", "target", "authorized dealers", "additional locations"]
+                }
+              ]
+            },
+            "customer_service": {
+              "question": "How do I contact customer service?",
+              "responses": [
+                {
+                  "id": "customer_service_1",
+                  "type": "phone_support",
+                  "content": "Call 1-800-XFINITY (1-800-934-6489) for general customer service. Have your account number ready for faster assistance. Phone support is available 24/7 for technical issues and business hours for billing questions.",
+                  "keywords": ["1-800-xfinity", "1-800-934-6489", "account number", "24/7", "technical issues", "billing"]
+                },
+                {
+                  "id": "customer_service_2",
+                  "type": "online_chat",
+                  "content": "Use the chat feature on xfinity.com/support or in the Xfinity app to connect with virtual assistants or live agents. Chat support can handle most common questions and technical issues.",
+                  "keywords": ["chat feature", "xfinity.com/support", "virtual assistants", "live agents", "common questions"]
+                },
+                {
+                  "id": "customer_service_3",
+                  "type": "social_media",
+                  "content": "Contact @ComcastCares on Twitter or Xfinity's Facebook page for public support. Direct message for account-specific issues that require privacy.",
+                  "keywords": ["@comcastcares", "twitter", "facebook", "public support", "direct message", "privacy"]
+                },
+                {
+                  "id": "customer_service_4",
+                  "type": "in_store",
+                  "content": "Visit an Xfinity store for face-to-face assistance with complex issues, equipment problems, or account changes. Store representatives can provide personalized service and demonstrations.",
+                  "keywords": ["face-to-face", "complex issues", "equipment problems", "account changes", "personalized service"]
+                },
+                {
+                  "id": "customer_service_5",
+                  "type": "specialized_numbers",
+                  "content": "Specialized support numbers: Technical Support: 1-800-XFINITY, Business Support: 1-800-391-3000, Billing Questions: 1-800-XFINITY, New Service: 1-800-XFINITY.",
+                  "keywords": ["specialized numbers", "technical support", "business support", "1-800-391-3000", "new service"]
+                }
+              ]
+            },
+            "plan_upgrade": {
+              "question": "How do I upgrade or change my internet plan?",
+              "responses": [
+                {
+                  "id": "plan_upgrade_1",
+                  "type": "online_changes",
+                  "content": "Log in to your account at xfinity.com, go to 'My Services' > 'Internet' > 'Learn About Upgrading.' Review available plans for your address and select your new speed tier. Changes typically take effect within 24 hours.",
+                  "keywords": ["my services", "learn about upgrading", "available plans", "speed tier", "24 hours"]
+                },
+                {
+                  "id": "plan_upgrade_2",
+                  "type": "app_upgrades",
+                  "content": "Use the Xfinity app to view upgrade options. Tap 'Upgrade' on your internet service to see available plans and pricing. Complete the upgrade process directly through the app.",
+                  "keywords": ["xfinity app", "upgrade options", "available plans", "pricing", "upgrade process"]
+                },
+                {
+                  "id": "plan_upgrade_3",
+                  "type": "phone_upgrades",
+                  "content": "Call 1-800-XFINITY to speak with a representative about upgrade options. They can explain plan differences, check for promotions, and process your upgrade over the phone.",
+                  "keywords": ["1-800-xfinity", "representative", "plan differences", "promotions", "over the phone"]
+                },
+                {
+                  "id": "plan_upgrade_4",
+                  "type": "equipment_considerations",
+                  "content": "Upgrading to higher speeds may require newer equipment. Your current modem/router will be evaluated for compatibility, and free upgrades are provided when necessary for optimal performance.",
+                  "keywords": ["higher speeds", "newer equipment", "compatibility", "free upgrades", "optimal performance"]
+                },
+                {
+                  "id": "plan_upgrade_5",
+                  "type": "timing",
+                  "content": "Plan changes typically take effect on your next billing cycle, though speed increases often activate within hours. You'll receive confirmation via email when the change is complete.",
+                  "keywords": ["billing cycle", "speed increases", "activate", "confirmation email", "complete"]
+                }
+              ]
+            },
+            "equipment_needed": {
+              "question": "What equipment do I need?",
+              "responses": [
+                {
+                  "id": "equipment_needed_1",
+                  "type": "gateway",
+                  "content": "Xfinity provides an xFi Gateway that combines modem and router functionality. The latest models support WiFi 6 technology and can handle gigabit speeds with optimal performance.",
+                  "keywords": ["xfi gateway", "modem", "router", "wifi 6", "gigabit speeds", "optimal performance"]
+                },
+                {
+                  "id": "equipment_needed_2",
+                  "type": "separate_devices",
+                  "content": "You can use your own compatible modem (DOCSIS 3.1 recommended) and router. Check xfinity.com/devicecompatibility for approved modems that work with your speed tier.",
+                  "keywords": ["compatible modem", "docsis 3.1", "device compatibility", "approved modems", "speed tier"]
+                },
+                {
+                  "id": "equipment_needed_3",
+                  "type": "tv_equipment",
+                  "content": "For Xfinity TV service, you'll need set-top boxes or streaming devices. Options include X1 TV boxes, Flex streaming devices, and apps for smart TVs and mobile devices.",
+                  "keywords": ["tv service", "set-top boxes", "streaming devices", "x1 tv boxes", "flex", "smart tvs"]
+                },
+                {
+                  "id": "equipment_needed_4",
+                  "type": "additional_equipment",
+                  "content": "Consider xFi Pods for WiFi coverage extension, security cameras for home monitoring, and xFi Complete for advanced network management and unlimited data.",
+                  "keywords": ["xfi pods", "coverage extension", "security cameras", "home monitoring", "xfi complete"]
+                }
+              ]
+            },
+            "service_includes": {
+              "question": "What's included with my internet service?",
+              "responses": [
+                {
+                  "id": "service_includes_1",
+                  "type": "core_features",
+                  "content": "Your internet service includes unlimited data usage, advanced WiFi equipment lease, access to millions of Xfinity WiFi hotspots nationwide, and Norton Security Online for virus protection.",
+                  "keywords": ["unlimited data", "wifi equipment lease", "wifi hotspots", "norton security", "virus protection"]
+                },
+                {
+                  "id": "service_includes_2",
+                  "type": "xfi_platform",
+                  "content": "All plans include access to the xFi platform for network management, parental controls, device monitoring, and WiFi optimization through the Xfinity app.",
+                  "keywords": ["xfi platform", "network management", "parental controls", "device monitoring", "wifi optimization"]
+                },
+                {
+                  "id": "service_includes_3",
+                  "type": "installation",
+                  "content": "Free professional installation is often included for new customers, including coax cable runs, equipment setup, and WiFi network configuration.",
+                  "keywords": ["professional installation", "new customers", "coax cable", "equipment setup", "network configuration"]
+                },
+                {
+                  "id": "service_includes_4",
+                  "type": "support",
+                  "content": "24/7 technical support, online troubleshooting tools, and access to Xfinity stores for equipment assistance are included with all internet plans.",
+                  "keywords": ["24/7 support", "troubleshooting tools", "xfinity stores", "equipment assistance", "internet plans"]
+                }
+              ]
+            },
+            "bundle_services": {
+              "question": "How do I bundle services to save money?",
+              "responses": [
+                {
+                  "id": "bundle_services_1",
+                  "type": "double_play",
+                  "content": "Combine internet and TV or internet and phone service for bundled savings. Double play bundles often cost less than purchasing services separately.",
+                  "keywords": ["double play", "internet and tv", "internet and phone", "bundled savings", "cost less"]
+                },
+                {
+                  "id": "bundle_services_2",
+                  "type": "triple_play",
+                  "content": "Bundle internet, TV, and phone service for maximum savings. Triple play bundles include premium features and equipment at discounted rates.",
+                  "keywords": ["triple play", "internet tv phone", "maximum savings", "premium features", "discounted rates"]
+                },
+                {
+                  "id": "bundle_services_3",
+                  "type": "streaming_bundles",
+                  "content": "Combine Xfinity internet with streaming services like Netflix, Apple TV+, or Peacock Premium for bundled pricing and unified billing.",
+                  "keywords": ["streaming bundles", "netflix", "apple tv+", "peacock premium", "unified billing"]
+                },
+                {
+                  "id": "bundle_services_4",
+                  "type": "bundle_benefits",
+                  "content": "Bundles offer simplified billing, promotional pricing, equipment savings, and often include premium features like enhanced DVR storage or premium channel trials.",
+                  "keywords": ["simplified billing", "promotional pricing", "equipment savings", "enhanced dvr", "premium channels"]
+                }
+              ]
+            },
+            "xfi_platform": {
+              "question": "What is xFi and how does it work?",
+              "responses": [
+                {
+                  "id": "xfi_platform_1",
+                  "type": "overview",
+                  "content": "xFi is Xfinity's advanced WiFi platform that provides network management, security features, and parental controls through a unified app and web interface.",
+                  "keywords": ["xfi", "advanced wifi", "network management", "security features", "parental controls", "unified interface"]
+                },
+                {
+                  "id": "xfi_platform_2",
+                  "type": "features",
+                  "content": "Key features include device management, speed testing, WiFi optimization, guest network creation, parental controls with time limits, and detailed usage reporting.",
+                  "keywords": ["device management", "speed testing", "wifi optimization", "guest network", "time limits", "usage reporting"]
+                },
+                {
+                  "id": "xfi_platform_3",
+                  "type": "xfi_complete",
+                  "content": "xFi Complete adds unlimited data, advanced security, and xFi Pods for extended coverage. It's available as an add-on to any internet plan.",
+                  "keywords": ["xfi complete", "unlimited data", "advanced security", "xfi pods", "extended coverage", "add-on"]
+                },
+                {
+                  "id": "xfi_platform_4",
+                  "type": "xfi_gateway",
+                  "content": "The xFi Gateway is the latest generation modem/router that supports WiFi 6, gigabit speeds, and all xFi platform features for optimal performance.",
+                  "keywords": ["xfi gateway", "latest generation", "wifi 6", "gigabit speeds", "platform features"]
+                }
+              ]
+            },
+            "network_security": {
+              "question": "How do I protect my home network?",
+              "responses": [
+                {
+                  "id": "network_security_1",
+                  "type": "built_in_security",
+                  "content": "Xfinity internet includes Norton Security Online, automatic security updates, and advanced threat protection built into xFi Gateways.",
+                  "keywords": ["norton security", "automatic updates", "threat protection", "xfi gateways", "built-in"]
+                },
+                {
+                  "id": "network_security_2",
+                  "type": "security_settings",
+                  "content": "Use WPA3 encryption (strongest available), create strong unique passwords, enable automatic firmware updates, and regularly change your WiFi password.",
+                  "keywords": ["wpa3 encryption", "strong passwords", "firmware updates", "wifi password", "security settings"]
+                },
+                {
+                  "id": "network_security_3",
+                  "type": "advanced_security",
+                  "content": "Available with xFi Complete, this feature blocks malicious websites, prevents infected devices from spreading malware, and provides real-time threat monitoring.",
+                  "keywords": ["xfi complete", "malicious websites", "infected devices", "malware", "threat monitoring"]
+                },
+                {
+                  "id": "network_security_4",
+                  "type": "safe_practices",
+                  "content": "Keep devices updated, use strong unique passwords, be cautious with public WiFi, and avoid clicking suspicious links or downloading unknown software.",
+                  "keywords": ["devices updated", "unique passwords", "public wifi", "suspicious links", "unknown software"]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "metadata": {
+        "total_responses": 89,
+        "categories": {
+          "tech_support": 7,
+          "billing": 7,
+          "general": 10
+        },
+        "response_types": [
+          "troubleshooting",
+          "step_by_step",
+          "informational",
+          "comparative",
+          "procedural"
+        ],
+        "last_review": "2025-06-16",
+        "quality_score": 95
+      }
+    }
+  }
+  

@@ -1,0 +1,129 @@
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.label {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-system-foreground);
+  line-height: var(--line-height-tight);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-sf-pro);
+  font-size: var(--text-lg);
+  line-height: var(--line-height-normal);
+  color: var(--color-system-foreground);
+  background-color: var(--color-system-background);
+  border: 1px solid var(--color-system-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input::placeholder {
+  color: var(--color-system-foreground-tertiary);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--color-system-background-secondary);
+}
+
+/* Error State */
+.error {
+  border-color: var(--color-red);
+}
+
+.error:focus {
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
+}
+
+/* Icon Support */
+.leftIcon,
+.rightIcon,
+.errorIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--color-system-foreground-tertiary);
+  pointer-events: none;
+}
+
+.leftIcon {
+  left: var(--spacing-sm);
+}
+
+.rightIcon,
+.errorIcon {
+  right: var(--spacing-sm);
+}
+
+.errorIcon {
+  color: var(--color-red);
+}
+
+.hasLeftIcon {
+  padding-left: calc(var(--spacing-md) + 20px + var(--spacing-xs));
+}
+
+.hasRightIcon {
+  padding-right: calc(var(--spacing-md) + 20px + var(--spacing-xs));
+}
+
+/* Helper Text */
+.helperText {
+  font-size: var(--text-sm);
+  color: var(--color-system-foreground-tertiary);
+  line-height: var(--line-height-tight);
+}
+
+.errorText {
+  color: var(--color-red);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 767px) {
+  .input {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .label {
+    font-size: var(--text-sm);
+  }
+
+  .helperText {
+    font-size: var(--text-xs);
+  }
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .input:disabled {
+    background-color: var(--color-system-background-tertiary);
+  }
+}

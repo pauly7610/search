@@ -1,0 +1,58 @@
+# Core Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+websockets==13.1
+
+# LangChain & LangGraph
+langchain==0.3.7
+langchain-openai==0.2.8
+langchain-community==0.3.7
+langgraph==0.2.34
+langsmith==0.1.140
+
+# Database & Vector Store
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.35
+alembic==1.14.0
+pgvector==0.3.6
+asyncpg==0.29.0
+
+# Vector & Embeddings
+sentence-transformers==3.2.1
+numpy==1.26.4
+
+# Caching & Session Storage
+redis==5.2.0
+
+# ML & AI
+openai==1.54.3
+anthropic==0.39.0
+pandas==2.2.3
+scikit-learn==1.5.2
+
+# Monitoring & Observability
+prometheus-client==0.21.0
+structlog==24.4.0
+sentry-sdk[fastapi]==2.18.0
+
+# AWS Services
+boto3==1.35.67
+botocore==1.35.67
+
+# Development & Testing
+pytest==8.3.3
+pytest-asyncio==0.24.0
+black==24.10.0
+flake8==7.1.1
+mypy==1.13.0
+pre-commit==4.0.1
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.12
+
+# Configuration
+pydantic==2.10.2
+pydantic-settings==2.6.1
+python-dotenv==1.0.1 

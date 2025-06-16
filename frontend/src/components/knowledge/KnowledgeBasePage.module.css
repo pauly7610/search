@@ -1,0 +1,66 @@
+.knowledgeBasePage {
+  padding: 32px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  min-height: 80vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.searchInput {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 16px;
+  width: 320px;
+}
+
+.articlesSection {
+  min-height: 300px;
+}
+
+.placeholder {
+  color: #888;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 60px;
+}
+
+.articleList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.articleItem {
+  background: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  margin-bottom: 24px;
+  padding: 20px 24px;
+}
+
+.articleItem h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+
+.meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 16px;
+}
+
+.keywords {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #444;
+}

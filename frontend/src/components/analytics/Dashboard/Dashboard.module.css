@@ -1,0 +1,52 @@
+/* Dashboard styles */
+
+.dashboard {
+  padding: 32px;
+}
+
+.metricsRow {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.metricCard {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 24px 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.metricValueRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.metricValue {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.metricLabel {
+  font-size: 1rem;
+  color: #888;
+}
+
+.chartSection {
+  margin-bottom: 40px;
+}
+
+.loading,
+.error {
+  font-size: 1.2rem;
+  color: #888;
+  text-align: center;
+  margin-top: 40px;
+}

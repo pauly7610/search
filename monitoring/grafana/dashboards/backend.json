@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Backend API Overview",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Request Rate",
+        "targets": [
+          {"expr": "sum(rate(http_requests_total{job='backend'}[1m]))", "legendFormat": "req/s"}
+        ],
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+      },
+      {
+        "type": "graph",
+        "title": "Request Latency (p95)",
+        "targets": [
+          {"expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job='backend'}[5m])) by (le))", "legendFormat": "p95 latency"}
+        ],
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8}
+      },
+      {
+        "type": "graph",
+        "title": "Error Rate",
+        "targets": [
+          {"expr": "sum(rate(http_requests_total{job='backend',status=~'5..'}[5m])) by (job) / sum(rate(http_requests_total{job='backend'}[5m])) by (job)", "legendFormat": "error rate"}
+        ],
+        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8}
+      },
+      {
+        "type": "stat",
+        "title": "Active Users",
+        "targets": [
+          {"expr": "active_users", "legendFormat": "users"}
+        ],
+        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8}
+      }
+    ],
+    "schemaVersion": 30,
+    "version": 1
+  }
+} 

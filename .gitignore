@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.env
+.venv/
+venv/
+ENV/
+
+# Node.js
+node_modules/
+yarn.lock
+npm-debug.log*
+
+# Build output
+/dist/
+/build/
+/frontend/dist/
+/frontend/build/
+/backend/dist/
+/backend/build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Misc
+*.bak
+*.tmp
+
+# Database
+*.sqlite3
+*.db
+/database/*.sqlite
+/database/*.db
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Monitoring/metrics
+/monitoring/grafana/data/
+/monitoring/prometheus/data/ 

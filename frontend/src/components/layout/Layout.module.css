@@ -1,0 +1,14 @@
+.layoutContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  background: #f9f9f9;
+}
+
+/* Add more layout styles as needed */

@@ -1,14 +1,43 @@
-.layoutContainer {
-  display: flex;
-  flex-direction: column;
+.layout {
   min-height: 100vh;
   background: #f8fafc;
 }
 
-.mainContent {
+.content {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 2;
+}
+
+.main {
   flex: 1;
+  margin-left: 280px;
   padding: 2rem;
   background: #f9f9f9;
+  min-width: 0;
 }
+
+@media (max-width: 1023px) {
+  .sidebar {
+    display: none;
+  }
+  .main {
+    margin-left: 0;
+  }
+}
+
+/* Mobile nav styles remain unchanged */
 
 /* Add more layout styles as needed */

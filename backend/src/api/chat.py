@@ -5,6 +5,7 @@ from typing import List, Optional, Dict, Any
 import asyncio
 from datetime import datetime
 import uuid
+from openai.error import RateLimitError
 
 from services.chat_service import ChatService
 
@@ -108,20 +109,35 @@ async def websocket_endpoint(
     try:
         while True:
             data = await websocket.receive_json()
-            agent_response = await chat_service.process_message(
-                conversation_id,
-                data["content"]
-            )
-            await websocket.send_json({
-                "id": str(uuid.uuid4()),
-                "content": agent_response["answer"],
-                "role": "assistant",
-                "timestamp": datetime.utcnow().isoformat(),
-                "agent": agent_response["agent"],
-                "agent_type": agent_response["agent_type"],
-                "answer_type": agent_response["answer_type"],
-                "intent": agent_response["intent"],
-                "intent_data": agent_response["intent_data"]
-            })
+            try:
+                agent_response = await chat_service.process_message(
+                    conversation_id,
+                    data["content"]
+                )
+                await websocket.send_json({
+                    "id": str(uuid.uuid4()),
+                    "content": agent_response["answer"],
+                    "role": "assistant",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "agent": agent_response["agent"],
+                    "agent_type": agent_response["agent_type"],
+                    "answer_type": agent_response["answer_type"],
+                    "intent": agent_response["intent"],
+                    "intent_data": agent_response["intent_data"]
+                })
+            except RateLimitError:
+                await websocket.send_json({
+                    "id": str(uuid.uuid4()),
+                    "content": "Sorry, the AI service is currently unavailable due to usage limits. Please try again later.",
+                    "role": "assistant",
+                    "timestamp": datetime.utcnow().isoformat(),
+                })
+            except Exception as e:
+                await websocket.send_json({
+                    "id": str(uuid.uuid4()),
+                    "content": f"An error occurred: {str(e)}",
+                    "role": "assistant",
+                    "timestamp": datetime.utcnow().isoformat(),
+                })
     except WebSocketDisconnect:
         pass 

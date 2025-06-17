@@ -74,43 +74,77 @@ export const Dashboard: React.FC = () => {
         animate="visible"
       >
         <motion.div variants={itemVariants}>
-          <MetricsCard
-            title="Total Conversations"
-            value={data.totalConversations}
-            subtitle="This month"
-            icon={<ChatBubbleLeftRightIcon className={styles.metricIcon} />}
-            loading={loading}
-          />
+          <div className={styles.metricCard}>
+            <h2>Total Conversations</h2>
+            <div className={styles.metricValueRow}>
+              <span className={styles.metricValue}>{data.totalConversations}</span>
+              <ResponsiveContainer width={60} height={40}>
+                <BarChart data={totalConversationsData} layout="vertical">
+                  <Bar dataKey="value" fill="#8884d8" barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className={styles.metricLabel}>This month</div>
+          </div>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <MetricsCard
-            title="Avg Response Time"
-            value={data.averageResponseTime}
-            subtitle="Last 7 days"
-            icon={<ClockIcon className={styles.metricIcon} />}
-            loading={loading}
-          />
+          <div className={styles.metricCard}>
+            <h2>Avg Response Time</h2>
+            <div className={styles.metricValueRow}>
+              <span className={styles.metricValue}>{data.averageResponseTime}</span>
+              <ResponsiveContainer width={60} height={40}>
+                <BarChart data={avgResponseTimeData} layout="vertical">
+                  <Bar dataKey="value" fill="#82ca9d" barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className={styles.metricLabel}>Last 7 days</div>
+          </div>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <MetricsCard
-            title="Customer Satisfaction"
-            value={data.satisfactionRate}
-            subtitle="Average rating"
-            icon={<StarIcon className={styles.metricIcon} />}
-            loading={loading}
-          />
+          <div className={styles.metricCard}>
+            <h2>Customer Satisfaction</h2>
+            <div className={styles.metricValueRow}>
+              <span className={styles.metricValue}>{data.satisfactionRate}</span>
+              <ResponsiveContainer width={60} height={40}>
+                <PieChart>
+                  <Pie
+                    data={satisfactionData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={12}
+                    outerRadius={20}
+                    startAngle={90}
+                    endAngle={-270}
+                  >
+                    {satisfactionData.map((entry, idx) => (
+                      <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className={styles.metricLabel}>Average rating</div>
+          </div>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <MetricsCard
-            title="Active Users"
-            value={data.activeUsers}
-            subtitle="Currently online"
-            icon={<UserGroupIcon className={styles.metricIcon} />}
-            loading={loading}
-          />
+          <div className={styles.metricCard}>
+            <h2>Active Users</h2>
+            <div className={styles.metricValueRow}>
+              <span className={styles.metricValue}>{data.activeUsers}</span>
+              <ResponsiveContainer width={60} height={40}>
+                <BarChart data={activeUsersData} layout="vertical">
+                  <Bar dataKey="value" fill="#ff8042" barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className={styles.metricLabel}>Currently online</div>
+          </div>
         </motion.div>
       </motion.div>
 

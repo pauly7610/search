@@ -59,10 +59,14 @@ class ChatService:
             answer = kb_response["content"]
             answer_type = kb_response["type"]
         else:
-            # Fallback to LLM if no KB match
-            chain = self.get_or_create_conversation(conversation_id)
-            answer = await chain.arun(message)
-            answer_type = "llm_generated"
+            # Fallback to LLM if no KB match, with robust error handling
+            try:
+                chain = self.get_or_create_conversation(conversation_id)
+                answer = await chain.arun(message)
+                answer_type = "llm_generated"
+            except Exception as e:
+                answer = "Sorry, I can't answer that right now. Please try again later."
+                answer_type = "error"
         return {
             "answer": answer,
             "agent": self.kb[agent]["name"],

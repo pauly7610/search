@@ -24,11 +24,11 @@ class IntentService:
             Message: {message}
 
             Respond with a JSON object containing:
-            {
+            {{
                 "intent": "category",
                 "confidence": 0.0-1.0,
                 "keywords": ["relevant", "words"]
-            }
+            }}
             """
         )
 

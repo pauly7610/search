@@ -1,11 +1,11 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import asyncio
 from datetime import datetime
 import uuid
-from openai.error import RateLimitError
+from openai import OpenAI, RateLimitError
 
 from services.chat_service import ChatService
 

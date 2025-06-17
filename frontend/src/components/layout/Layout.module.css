@@ -6,7 +6,7 @@
 .content {
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  min-height: 90vh;
 }
 
 .sidebar {
@@ -24,7 +24,7 @@
 .main {
   flex: 1;
   margin-left: 280px;
-  padding: 2rem;
+  padding: 0.5rem;
   background: #f9f9f9;
   min-width: 0;
 }

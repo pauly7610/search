@@ -1,0 +1,295 @@
+---
+- name: Provision Xfinity AI Agent AMI
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    app_user: "xfinity"
+    app_dir: "/opt/xfinity-agent"
+    backend_dir: "{{ app_dir }}/backend"
+    frontend_dir: "{{ app_dir }}/frontend"
+    node_version: "20"
+    python_version: "3.11"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - build-essential
+          - libpq-dev
+          - python3-pip
+          - python3-venv
+          - python3-dev
+          - nginx
+          - supervisor
+          - postgresql-client
+          - redis-tools
+          - unzip
+          - jq
+          - htop
+          - vim
+          - software-properties-common
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    - name: Install Docker
+      block:
+        - name: Add Docker GPG key
+          apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+        - name: Add Docker repository
+          apt_repository:
+            repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+            state: present
+
+        - name: Install Docker
+          apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+            state: present
+
+        - name: Start and enable Docker
+          systemd:
+            name: docker
+            state: started
+            enabled: yes
+
+    - name: Install Node.js
+      block:
+        - name: Download NodeSource setup script
+          get_url:
+            url: "https://deb.nodesource.com/setup_{{ node_version }}.x"
+            dest: /tmp/nodesource_setup.sh
+            mode: "0755"
+
+        - name: Run NodeSource setup script
+          shell: /tmp/nodesource_setup.sh
+
+        - name: Install Node.js
+          apt:
+            name: nodejs
+            state: present
+            update_cache: yes
+
+        - name: Install global npm packages
+          npm:
+            name: "{{ item }}"
+            global: yes
+          loop:
+            - pm2
+            - yarn
+
+    - name: Create application user
+      user:
+        name: "{{ app_user }}"
+        system: yes
+        shell: /bin/bash
+        home: "{{ app_dir }}"
+        create_home: yes
+
+    - name: Create application directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0755"
+      loop:
+        - "{{ app_dir }}"
+        - "{{ backend_dir }}"
+        - "{{ frontend_dir }}"
+        - "{{ app_dir }}/logs"
+        - "{{ app_dir }}/config"
+
+    - name: Copy application source code (simulated - in real deployment, clone from Git)
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0644"
+        remote_src: no
+      loop:
+        - { src: "../../../backend/", dest: "{{ backend_dir }}/" }
+        - { src: "../../../frontend/", dest: "{{ frontend_dir }}/" }
+      ignore_errors: yes
+
+    - name: Set up Python virtual environment for backend
+      become_user: "{{ app_user }}"
+      block:
+        - name: Create Python virtual environment
+          command: python3 -m venv "{{ backend_dir }}/venv"
+          args:
+            creates: "{{ backend_dir }}/venv/bin/activate"
+
+        - name: Upgrade pip in virtual environment
+          pip:
+            name: pip
+            state: latest
+            virtualenv: "{{ backend_dir }}/venv"
+
+        - name: Install backend requirements
+          pip:
+            requirements: "{{ backend_dir }}/requirements.txt"
+            virtualenv: "{{ backend_dir }}/venv"
+          ignore_errors: yes
+
+    - name: Build frontend application
+      become_user: "{{ app_user }}"
+      block:
+        - name: Install frontend dependencies
+          npm:
+            path: "{{ frontend_dir }}"
+          ignore_errors: yes
+
+        - name: Build frontend
+          command: npm run build
+          args:
+            chdir: "{{ frontend_dir }}"
+          ignore_errors: yes
+
+    - name: Configure Nginx for frontend
+      template:
+        src: nginx_frontend.conf.j2
+        dest: /etc/nginx/sites-available/xfinity-frontend
+        mode: "0644"
+      notify: restart nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/xfinity-frontend
+        dest: /etc/nginx/sites-enabled/xfinity-frontend
+        state: link
+      notify: restart nginx
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+
+    - name: Create Nginx configuration for frontend
+      copy:
+        content: |
+          server {
+              listen 80;
+              server_name _;
+              root {{ frontend_dir }}/dist;
+              index index.html;
+              
+              # Frontend routes
+              location / {
+                  try_files $uri $uri/ /index.html;
+              }
+              
+              # Backend API proxy
+              location /api/ {
+                  proxy_pass http://127.0.0.1:8000;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+              
+              # WebSocket proxy
+              location /ws {
+                  proxy_pass http://127.0.0.1:8000;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection "upgrade";
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+              
+              # Security headers
+              add_header X-Frame-Options "SAMEORIGIN" always;
+              add_header X-XSS-Protection "1; mode=block" always;
+              add_header X-Content-Type-Options "nosniff" always;
+              add_header Referrer-Policy "no-referrer-when-downgrade" always;
+          }
+        dest: /etc/nginx/sites-available/xfinity-frontend
+
+    - name: Configure Supervisor for backend
+      copy:
+        content: |
+          [program:xfinity-backend]
+          command={{ backend_dir }}/venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
+          directory={{ backend_dir }}
+          user={{ app_user }}
+          autostart=true
+          autorestart=true
+          redirect_stderr=true
+          stdout_logfile={{ app_dir }}/logs/backend.log
+          environment=PYTHONPATH="{{ backend_dir }}"
+
+          [program:xfinity-frontend]
+          command=/usr/bin/nginx -g "daemon off;"
+          autostart=true
+          autorestart=true
+          redirect_stderr=true
+          stdout_logfile={{ app_dir }}/logs/nginx.log
+        dest: /etc/supervisor/conf.d/xfinity-agent.conf
+      notify: restart supervisor
+
+    - name: Create systemd service for the application
+      copy:
+        content: |
+          [Unit]
+          Description=Xfinity AI Agent Application
+          After=network.target postgresql.service redis.service
+
+          [Service]
+          Type=forking
+          User={{ app_user }}
+          WorkingDirectory={{ backend_dir }}
+          Environment=PYTHONPATH={{ backend_dir }}
+          ExecStart={{ backend_dir }}/venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000 --daemon
+          ExecReload=/bin/kill -HUP $MAINPID
+          KillMode=mixed
+          TimeoutStopSec=5
+          PrivateTmp=true
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/xfinity-agent.service
+
+    - name: Enable services
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+        daemon_reload: yes
+      loop:
+        - nginx
+        - supervisor
+        - xfinity-agent
+
+  handlers:
+    - name: restart nginx
+      systemd:
+        name: nginx
+        state: restarted
+
+    - name: restart supervisor
+      systemd:
+        name: supervisor
+        state: restarted

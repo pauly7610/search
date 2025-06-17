@@ -63,4 +63,34 @@ coverage.xml
 
 # Monitoring/metrics
 /monitoring/grafana/data/
-/monitoring/prometheus/data/ 
+/monitoring/prometheus/data/
+
+# Alembic and database migration state
+alembic.ini
+database/alembic/
+backend/database/
+
+# Infrastructure sensitive and generated files
+infrastructure/terraform/.terraform/
+infrastructure/terraform/terraform.tfstate*
+infrastructure/terraform/.terraform.lock.hcl
+infrastructure/terraform/secrets.tfvars
+infrastructure/packer/output/
+infrastructure/docker-compose.override.yml
+
+# Python packaging
+*.egg-info/
+*.egg
+
+# Ignore local scripts or generated files (if not source)
+backend/crud.py
+backend/main.py
+backend/middleware/
+backend/schemas.py
+
+# Ignore init files if generated (otherwise, add to git)
+# backend/src/__init__.py
+# backend/src/api/__init__.py
+# backend/src/config/__init__.py
+# backend/src/models/__init__.py
+# backend/src/services/__init__.py 

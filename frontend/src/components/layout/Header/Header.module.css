@@ -176,3 +176,26 @@
     font-size: var(--text-base);
   }
 }
+
+.themeToggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+.themeToggleBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.themeToggleBtn:hover {
+  background: var(--color-system-fill);
+}
+.themeIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-system-foreground-secondary);
+  transition: color 0.2s;
+}

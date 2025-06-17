@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI
 from typing import Dict, List, Optional
 import os
 from services.intent_service import IntentService
+import re
 
 class ChatService:
     def __init__(self):
@@ -30,16 +31,33 @@ class ChatService:
             self.conversations[conversation_id] = chain
         return self.conversations[conversation_id]
 
+    def normalize(self, text: str) -> str:
+        return re.sub(r'[^a-z0-9 ]', '', text.lower().replace('_', ' ')).strip()
+
+    def tokenize(self, text: str) -> set:
+        return set(self.normalize(text).split())
+
     def search_agent_kb(self, agent: str, message: str) -> Optional[Dict]:
-        """Search the agent's knowledge base for the best matching response."""
+        """Search the agent's knowledge base for the best matching response, including category name match and token overlap."""
         agent_kb = self.kb.get(agent, {}).get("categories", {})
         best_match = None
         best_score = 0
-        message_lower = message.lower()
-        for cat in agent_kb.values():
+        message_norm = self.normalize(message)
+        message_tokens = self.tokenize(message)
+        for cat_name, cat in agent_kb.items():
+            cat_name_norm = self.normalize(cat_name)
+            cat_name_tokens = self.tokenize(cat_name)
+            # Direct category name match or token overlap
+            if cat_name_norm in message_norm or message_norm in cat_name_norm or cat_name_tokens & message_tokens:
+                if cat["responses"]:
+                    return cat["responses"][0]
             for resp in cat["responses"]:
-                # Simple keyword match scoring
-                score = sum(1 for kw in resp["keywords"] if kw.lower() in message_lower)
+                # Token overlap scoring
+                score = 0
+                for kw in resp["keywords"]:
+                    kw_tokens = self.tokenize(kw)
+                    if kw_tokens & message_tokens:
+                        score += 1
                 if score > best_score:
                     best_score = score
                     best_match = resp

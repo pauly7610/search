@@ -98,7 +98,22 @@
                   "id": "outage_check_1",
                   "type": "official_status",
                   "content": "Visit the Xfinity Status Center at xfinity.com/support/status or use the Xfinity app. Enter your address or log in to see real-time outage reports, affected services, and estimated resolution times for your specific area.",
-                  "keywords": ["status center", "xfinity app", "real-time", "outage reports", "resolution times"]
+                  "keywords": [
+                    "status center", "xfinity app", "real-time", "outage reports", "resolution times",
+                    "internet out", "internet is out", "no internet", "lost connection", "can't connect", "connection lost",
+                    "wifi down", "wifi is down", "service outage", "service down", "my internet is down", "my wifi is out",
+                    "no connection", "not connecting", "can't get online", "can't access internet", "network down", "broadband out",
+                    "modem offline", "router offline", "disconnected", "internet stopped working", "why is my internet out",
+                    "why is my wifi out", "outage", "down", "internet failure", "internet dropped", "signal lost", "no bars",
+                    "connection failed", "network error", "internet unavailable", "service interruption", "internet problem",
+                    "internet issue", "wifi problem", "wifi issue", "internet help", "wifi help", "internet support", "wifi support",
+                    "internet fix", "wifi fix", "internet troubleshooting", "wifi troubleshooting", "internet repair", "wifi repair",
+                    "internet assistance", "wifi assistance", "internet question", "wifi question", "internet advice", "wifi advice",
+                    "internet stopped", "wifi stopped", "internet won't connect", "wifi won't connect", "internet won't work",
+                    "wifi won't work", "internet isn't working", "wifi isn't working", "internet keeps dropping", "wifi keeps dropping",
+                    "internet keeps disconnecting", "wifi keeps disconnecting", "internet keeps going out", "wifi keeps going out",
+                    "internet outage", "wifi outage", "broadband outage", "cable outage", "ISP down", "ISP outage"
+                  ]
                 },
                 {
                   "id": "outage_check_2",

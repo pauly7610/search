@@ -1,52 +1,191 @@
 /* Dashboard styles */
 
-.dashboard {
-  padding: 32px;
+.dashboardRoot {
+  min-height: 90vh;
+  background: var(--color-system-background);
+  color: var(--color-system-foreground);
+  padding: 2rem 1rem 3rem 1rem;
 }
-
-.metricsRow {
-  display: flex;
-  gap: 32px;
-  margin-bottom: 32px;
+.headerSection {
+  margin-bottom: 2rem;
 }
-
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.subtitle {
+  color: var(--color-system-foreground-tertiary);
+  font-size: 1.1rem;
+}
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
 .metricCard {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  padding: 24px 32px;
-  flex: 1;
+  background: var(--color-system-background-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.25rem;
+  border: 1.5px solid var(--color-system-border);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transition: border 0.2s;
+}
+.blueCard:hover {
+  border-color: #3b82f6;
+}
+.greenCard:hover {
+  border-color: #10b981;
+}
+.purpleCard:hover {
+  border-color: #8b5cf6;
+}
+.yellowCard:hover {
+  border-color: #f59e0b;
+}
+.metricTitle {
+  color: var(--color-system-foreground-tertiary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.metricValueHero {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.metricLabel {
+  color: var(--color-system-foreground-tertiary);
+  font-size: 0.95rem;
+}
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.chartCard {
+  background: var(--color-system-background-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.25rem;
+  border: 1.5px solid var(--color-system-border);
+  min-width: 0;
+}
+.chartTitle {
+  color: var(--color-system-foreground-tertiary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.metricsRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.metricsRowChart {
+  background: var(--color-system-background-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.25rem;
+  border: 1.5px solid var(--color-system-border);
+  min-width: 0;
+}
+.metricsRowChartWide {
+  grid-column: span 1;
+}
+.metricsRowStats {
+  background: var(--color-system-background-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem 1.25rem;
+  border: 1.5px solid var(--color-system-border);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.quickStatsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.quickStat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+}
+.blueText {
+  color: #3b82f6;
+  font-weight: 600;
+}
+.greenText {
+  color: #10b981;
+  font-weight: 600;
+}
+yellowText {
+  color: #f59e0b;
+  font-weight: 600;
+}
+purpleText {
+  color: #8b5cf6;
+  font-weight: 600;
 }
 
-.metricValueRow {
+.customTooltip {
+  background: var(--color-system-background-tertiary);
+  color: var(--color-system-foreground);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-system-border);
+  font-size: 1rem;
+}
+.tooltipLabel {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.tooltipValue {
+  font-size: 0.98rem;
+}
+.loadingContainer {
+  min-height: 60vh;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  justify-content: center;
 }
-
-.metricValue {
+.loadingText {
+  color: var(--color-system-foreground);
+  font-size: 1.5rem;
+}
+.errorText {
+  color: #ff3b30;
+  font-size: 1.5rem;
+}
+.radialText {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #222;
+  fill: var(--color-system-foreground);
 }
-
-.metricLabel {
-  font-size: 1rem;
-  color: #888;
-}
-
-.chartSection {
-  margin-bottom: 40px;
-}
-
-.loading,
-.error {
-  font-size: 1.2rem;
-  color: #888;
-  text-align: center;
-  margin-top: 40px;
+@media (max-width: 900px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
 }

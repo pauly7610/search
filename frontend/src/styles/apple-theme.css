@@ -29,17 +29,17 @@
   --color-teal: #5ac8fa;
   --color-indigo: #5856d6;
 
-  /* System Colors - Light Mode */
-  --color-system-background: #ffffff;
-  --color-system-background-secondary: #f2f2f7;
-  --color-system-background-tertiary: #ffffff;
-  --color-system-foreground: #000000;
-  --color-system-foreground-secondary: #3c3c43;
+  /* System Colors - DARK MODE DEFAULT */
+  --color-system-background: #000000;
+  --color-system-background-secondary: #1c1c1e;
+  --color-system-background-tertiary: #2c2c2e;
+  --color-system-foreground: #ffffff;
+  --color-system-foreground-secondary: #ebebf5;
   --color-system-foreground-tertiary: #8e8e93;
-  --color-system-border: #c6c6c8;
-  --color-system-separator: #e5e5ea;
-  --color-system-fill: rgba(120, 120, 128, 0.2);
-  --color-system-fill-secondary: rgba(120, 120, 128, 0.16);
+  --color-system-border: #38383a;
+  --color-system-separator: #38383a;
+  --color-system-fill: rgba(120, 120, 128, 0.36);
+  --color-system-fill-secondary: rgba(120, 120, 128, 0.32);
 
   /* Spacing - Apple's 8px grid system */
   --spacing-xs: 4px;
@@ -69,20 +69,18 @@
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-system-background: #000000;
-    --color-system-background-secondary: #1c1c1e;
-    --color-system-background-tertiary: #2c2c2e;
-    --color-system-foreground: #ffffff;
-    --color-system-foreground-secondary: #ebebf5;
-    --color-system-foreground-tertiary: #8e8e93;
-    --color-system-border: #38383a;
-    --color-system-separator: #38383a;
-    --color-system-fill: rgba(120, 120, 128, 0.36);
-    --color-system-fill-secondary: rgba(120, 120, 128, 0.32);
-  }
+/* Light Mode - override variables when .light is on body or app root */
+.light {
+  --color-system-background: #ffffff;
+  --color-system-background-secondary: #f2f2f7;
+  --color-system-background-tertiary: #ffffff;
+  --color-system-foreground: #000000;
+  --color-system-foreground-secondary: #3c3c43;
+  --color-system-foreground-tertiary: #8e8e93;
+  --color-system-border: #c6c6c8;
+  --color-system-separator: #e5e5ea;
+  --color-system-fill: rgba(120, 120, 128, 0.2);
+  --color-system-fill-secondary: rgba(120, 120, 128, 0.16);
 }
 
 /* Base Styles */
@@ -113,9 +111,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@media (prefers-color-scheme: dark) {
-  .liquid-glass {
-    background: rgba(28, 28, 30, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+.light .liquid-glass {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+:root .liquid-glass {
+  background: rgba(28, 28, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

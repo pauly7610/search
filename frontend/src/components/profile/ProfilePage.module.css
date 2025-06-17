@@ -1,9 +1,9 @@
 .profilePage {
   padding: 32px;
-  background: #fff;
+  background: var(--color-system-background-secondary);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  min-height: 80vh;
+  min-height: 90vh;
 }
 
 .header {
@@ -55,7 +55,7 @@
   display: flex;
   flex-direction: column;
   font-size: 15px;
-  color: #333;
+  color: var(--color-system-foreground);
 }
 .form input,
 .form textarea {
@@ -72,7 +72,7 @@
 }
 .profileInfo {
   font-size: 16px;
-  color: #333;
+  color: var(--color-system-foreground);
   display: flex;
   flex-direction: column;
   gap: 8px;

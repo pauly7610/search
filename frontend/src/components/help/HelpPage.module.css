@@ -1,9 +1,10 @@
 .helpPage {
   padding: 32px;
-  background: #fff;
+  background: var(--color-system-background-secondary);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  min-height: 80vh;
+  min-height: 90vh;
+  color: var(--color-system-foreground);
 }
 
 .header {
@@ -21,7 +22,7 @@
 
 .faqSection ul {
   list-style: disc inside;
-  color: #444;
+  color: var(--color-system-foreground-secondary);
   margin-left: 20px;
 }
 
@@ -31,7 +32,7 @@
 }
 
 .placeholder {
-  color: #888;
+  color: var(--color-system-foreground-tertiary);
   font-size: 18px;
   text-align: center;
   margin-top: 24px;

@@ -1,9 +1,10 @@
 .settingsPage {
   padding: 32px;
-  background: #fff;
+  background: var(--color-system-background-secondary);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  min-height: 80vh;
+  min-height: 90vh;
+  color: var(--color-system-foreground);
 }
 
 .header {

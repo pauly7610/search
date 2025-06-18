@@ -35,7 +35,7 @@ OPENAI_API_KEY=your-openai-key
 
 ```bash
 cd src
-uvicorn main:app --reload
+uvicorn src.main:app --reload
 ```
 
 #### Docker:

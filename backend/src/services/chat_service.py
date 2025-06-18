@@ -4,7 +4,7 @@ from langchain.chains import ConversationChain
 from langchain_openai import ChatOpenAI
 from typing import Dict, List, Optional
 import os
-from services.intent_service import IntentService
+from src.services.intent_service import IntentService
 import re
 
 class ChatService:

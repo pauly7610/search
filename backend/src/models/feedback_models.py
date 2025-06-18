@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.sql import func
-from config.database import Base
+from src.config.database import Base
 
 class Feedback(Base):
     __tablename__ = "feedback"

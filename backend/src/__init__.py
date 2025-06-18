@@ -1,4 +1,4 @@
 """
 Backend package initialization.
 """
-__init__.py to mark src as a package. 
+# This file marks 'src' as a Python package. 

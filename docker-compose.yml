@@ -17,6 +17,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - monitoring
 
   redis:
     image: redis:7-alpine
@@ -29,6 +31,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - monitoring
 
   backend:
     build: ./backend
@@ -46,6 +50,8 @@ services:
     volumes:
       - ./backend:/app
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - monitoring
 
   frontend:
     build: ./frontend
@@ -58,7 +64,13 @@ services:
       VITE_API_URL: http://localhost:8000
     depends_on:
       - backend
+    networks:
+      - monitoring
 
 volumes:
   postgres_data:
-  redis_data: 
+  redis_data:
+
+networks:
+  monitoring:
+    driver: bridge 

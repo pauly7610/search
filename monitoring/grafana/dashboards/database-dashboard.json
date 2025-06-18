@@ -1,0 +1,82 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "PostgreSQL Database Dashboard",
+    "tags": ["database", "postgresql"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Active Connections",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(postgres_stat_database_numbackends)",
+            "legendFormat": "Connections"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Cache Hit Ratio",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "avg(postgres_stat_database_blks_hit) / (avg(postgres_stat_database_blks_hit) + avg(postgres_stat_database_blks_read))",
+            "legendFormat": "Cache Hit Ratio"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Replication Lag (seconds)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "max(pg_replication_lag_seconds)",
+            "legendFormat": "Replication Lag"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Long Running Queries",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(5, postgres_stat_activity_max_tx_duration)",
+            "legendFormat": "Query Duration"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Deadlocks",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(postgres_stat_database_deadlocks[5m]))",
+            "legendFormat": "Deadlocks"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Conversation Table Growth",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "increase(postgres_stat_user_tables_n_tup_ins{relname=\"conversations\"}[1h])",
+            "legendFormat": "Conversations Created"
+          }
+        ]
+      }
+    ]
+  }
+} 

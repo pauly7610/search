@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, JSON, Text
 from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import UUID, VECTOR
+from sqlalchemy.dialects.postgresql import UUID
+from pgvector.sqlalchemy import Vector
 import uuid
 from ..config.database import Base
 
@@ -11,8 +12,8 @@ class KnowledgeBase(Base):
     title = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
     category = Column(String(100), nullable=True)
-    embedding = Column(VECTOR(1536), nullable=False)  # OpenAI embedding dimension
-    metadata = Column(JSON, nullable=True)
+    embedding = Column(Vector(1536), nullable=False)  # OpenAI embedding dimension
+    meta_data = Column(JSON, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

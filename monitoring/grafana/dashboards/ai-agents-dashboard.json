@@ -1,0 +1,60 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "AI Agents Performance Dashboard",
+    "tags": ["ai", "agents", "nlp"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Intent Classification Accuracy",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "intent_classification_accuracy{job=\"xfinity-backend\"}",
+            "legendFormat": "Classification Accuracy"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Agent Response Distribution",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum by (agent_type) (rate(ai_agent_responses_total{job=\"xfinity-backend\"}[5m]))",
+            "legendFormat": "{{ agent_type }}"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Knowledge Base Hit Rate",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(knowledge_base_hits_total{job=\"xfinity-backend\"}[5m]) / rate(knowledge_base_searches_total{job=\"xfinity-backend\"}[5m])",
+            "legendFormat": "Hit Rate"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Feedback Scores by Agent",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "avg by (agent_type) (feedback_score{job=\"xfinity-backend\"})",
+            "legendFormat": "{{ agent_type }} Avg Score"
+          }
+        ]
+      }
+    ]
+  }
+} 

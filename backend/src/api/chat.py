@@ -7,7 +7,7 @@ from datetime import datetime
 import uuid
 from openai import OpenAI, RateLimitError
 
-from services.chat_service import ChatService
+from src.services.chat_service import ChatService
 
 router = APIRouter()
 

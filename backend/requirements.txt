@@ -20,6 +20,8 @@ asyncpg==0.29.0
 # Vector & Embeddings
 sentence-transformers==3.2.1
 numpy==1.26.4
+faiss-cpu==1.7.4
+rapidfuzz==3.13.0
 
 # Caching & Session Storage
 redis==5.2.0
@@ -29,6 +31,19 @@ openai>=1.0.0
 anthropic==0.39.0
 pandas==2.2.3
 scikit-learn==1.5.2
+
+# MLOps & Experiment Tracking
+mlflow==2.18.0
+joblib==1.4.2
+
+# Data Visualization & Analysis
+matplotlib==3.9.2
+seaborn==0.13.2
+plotly==5.24.1
+
+# Additional ML Utilities
+scipy==1.14.1
+requests==2.32.3
 
 # Monitoring & Observability
 prometheus-client==0.21.0

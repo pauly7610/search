@@ -1,0 +1,29 @@
+groups:
+  - name: frontend-alerts
+    rules:
+      - alert: HighFrontend4xxErrorRate
+        expr: rate(nginx_http_requests_total{status=~"4.."}[5m]) / rate(nginx_http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High 4xx error rate on frontend"
+          description: "4xx error rate is {{ $value | humanizePercentage }} for {{ $labels.server_name }}"
+
+      - alert: HighFrontend5xxErrorRate
+        expr: rate(nginx_http_requests_total{status=~"5.."}[5m]) / rate(nginx_http_requests_total[5m]) > 0.02
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate on frontend"
+          description: "5xx error rate is {{ $value | humanizePercentage }} for {{ $labels.server_name }}"
+
+      - alert: HighFrontendLatency
+        expr: histogram_quantile(0.95, rate(nginx_http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High frontend request latency"
+          description: "95th percentile latency is {{ $value }}s for {{ $labels.server_name }}"

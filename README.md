@@ -14,7 +14,7 @@ A full-stack, production-ready demo of an agentic AI customer support system for
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone <github.com/pauly7610/customer_support>
 cd <repo>
 ```
 

@@ -1,0 +1,29 @@
+groups:
+  - name: database-alerts
+    rules:
+      - alert: DatabaseConnectionPoolExhaustion
+        expr: postgres_stat_database_numbackends / postgres_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "Database {{ $labels.datname }} using {{ $value | humanizePercentage }} of available connections"
+
+      - alert: HighDatabaseQueryTime
+        expr: postgres_stat_activity_max_tx_duration > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Long running database queries"
+          description: "Maximum transaction duration is {{ $value }}s"
+
+      - alert: ConversationTableGrowthRate
+        expr: increase(postgres_stat_user_tables_n_tup_ins{relname="conversations"}[1h]) > 1000
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "High conversation creation rate"
+          description: "{{ $value }} new conversations created in the last hour"

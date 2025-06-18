@@ -1,0 +1,87 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Xfinity AI Backend API Dashboard",
+    "tags": ["backend", "api", "ai"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "API Request Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"xfinity-backend\"}[5m])",
+            "legendFormat": "{{ method }} {{ endpoint }}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Response Time Distribution",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "rate(http_request_duration_seconds_bucket{job=\"xfinity-backend\"}[5m])",
+            "legendFormat": "{{ le }}"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "WebSocket Connections",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "websocket_connections_active{job=\"xfinity-backend\"}",
+            "legendFormat": "Active Connections"
+          },
+          {
+            "expr": "rate(websocket_connections_total{job=\"xfinity-backend\"}[5m])",
+            "legendFormat": "Connection Rate"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "AI Agent Performance",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(ai_agent_responses_total{job=\"xfinity-backend\"}[5m])",
+            "legendFormat": "{{ agent_type }} Responses"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(ai_agent_response_duration_seconds_bucket{job=\"xfinity-backend\"}[5m]))",
+            "legendFormat": "{{ agent_type }} P95 Duration"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Knowledge Base vs LLM Usage",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum(rate(responses_total{source=\"knowledge_base\"}[5m]))",
+            "legendFormat": "Knowledge Base"
+          },
+          {
+            "expr": "sum(rate(responses_total{source=\"llm\"}[5m]))",
+            "legendFormat": "LLM Fallback"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+} 

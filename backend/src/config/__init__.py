@@ -1,1 +1,1 @@
-__init__.py to mark config as a package. 
+# __init__.py to mark config as a package. 

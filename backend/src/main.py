@@ -8,7 +8,7 @@ import uvicorn
 import logging
 from prometheus_client import make_asgi_app
 
-from api import chat, analytics, feedback, knowledge, profile
+from src.api import chat, analytics, feedback, knowledge, profile
 
 # Configure logging
 logging.basicConfig(

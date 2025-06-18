@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime, JSON
 from sqlalchemy.sql import func
-from config.database import Base
+from src.config.database import Base
 
 class AnalyticsEvent(Base):
     __tablename__ = "analytics_events"

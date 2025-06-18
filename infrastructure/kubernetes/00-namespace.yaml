@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xfinity-ai
+  labels:
+    app.kubernetes.io/name: xfinity-ai
+    app.kubernetes.io/version: "2.0"
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xfinity-ai-backend
+  namespace: xfinity-ai
+  labels:
+    app.kubernetes.io/name: xfinity-ai-backend
+    app.kubernetes.io/component: backend
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: xfinity-ai-role
+  namespace: xfinity-ai
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: xfinity-ai-binding
+  namespace: xfinity-ai
+subjects:
+  - kind: ServiceAccount
+    name: xfinity-ai-backend
+    namespace: xfinity-ai
+roleRef:
+  kind: Role
+  name: xfinity-ai-role
+  apiGroup: rbac.authorization.k8s.io

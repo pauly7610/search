@@ -1,71 +1,144 @@
-version: '3.8'
 services:
-  postgres:
-    image: ankane/pgvector:latest
-    environment:
-      POSTGRES_DB: customer_support
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - monitoring
-  postgres-exporter:
-    image: prometheuscommunity/postgres-exporter
-    environment:
-      DATA_SOURCE_NAME: "postgresql://postgres:password@postgres:5432/customer_support?sslmode=disable"
-    ports:
-      - "9187:9187"
-    depends_on:
-      - postgres
-    networks:
-      - monitoring
-  node-exporter:
-    image: prom/node-exporter
-    ports:
-      - "9100:9100"
-    networks:
-      - monitoring
   backend:
     build: ../backend
+    container_name: xfinity-ai-backend
     environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      DATABASE_URL: postgresql+asyncpg://postgres:password@postgres:5432/customer_support
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - DATABASE_URL=postgresql://user:password@db:5432/xfinity_ai
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PROMETHEUS_METRICS_PORT=8001
     ports:
       - "8000:8000"
+      - "8001:8001"
     depends_on:
-      - postgres
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
-      - monitoring
+      - xfinity-ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   frontend:
     build: ../frontend
+    container_name: xfinity-ai-frontend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
     ports:
       - "3000:3000"
     depends_on:
       - backend
     networks:
-      - monitoring
-  prometheus:
-    image: prom/prometheus:latest
+      - xfinity-ai-network
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: xfinity-ai-postgres
+    environment:
+      POSTGRES_DB: xfinity_ai
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
     volumes:
-      - ../monitoring/prometheus/:/etc/prometheus/
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - xfinity-ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d xfinity_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: xfinity-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - xfinity-ai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: xfinity-ai-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
     ports:
       - "9090:9090"
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - prometheus_data:/prometheus
     networks:
-      - monitoring
+      - xfinity-ai-network
+    restart: unless-stopped
+
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.1
+    container_name: xfinity-ai-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
     ports:
       - "3001:3000"
     volumes:
-      - ../monitoring/grafana/:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
+      - ../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ../monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
     networks:
-      - monitoring
-volumes:
-  pgdata:
+      - xfinity-ai-network
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: xfinity-ai-node-exporter
+    command:
+      - '--path.rootfs=/host'
+    ports:
+      - "9100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+    networks:
+      - xfinity-ai-network
+    restart: unless-stopped
 
 networks:
-  monitoring:
-    driver: bridge 
+  xfinity-ai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

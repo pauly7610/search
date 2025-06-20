@@ -13,24 +13,45 @@ export const useChat = () => {
     if (!socket) return;
 
     socket.onmessage = (event) => {
-      const message: Message = JSON.parse(event.data);
-      setMessages((prev) => [...prev, message]);
-      setIsTyping(false);
+      try {
+        const message: Message = JSON.parse(event.data);
+        console.log('Received message:', message);
+        setMessages((prev) => [...prev, message]);
+        setIsTyping(false);
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+        setIsTyping(false);
+      }
     };
 
     socket.onclose = () => {
+      console.log('WebSocket connection closed');
+      setIsTyping(false);
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error in useChat:', error);
       setIsTyping(false);
     };
 
     return () => {
       socket.onmessage = null;
       socket.onclose = null;
+      socket.onerror = null;
     };
   }, [socket]);
 
   const sendMessage = useCallback(
     (content: string) => {
-      if (!socket || !content.trim()) return;
+      if (!socket || !content.trim()) {
+        console.log('Cannot send message - socket not available or content empty');
+        return;
+      }
+
+      if (socket.readyState !== WebSocket.OPEN) {
+        console.log('WebSocket not in OPEN state:', socket.readyState);
+        return;
+      }
 
       const message: Message = {
         id: Date.now().toString(),
@@ -40,8 +61,16 @@ export const useChat = () => {
         status: "sent",
       };
 
+      console.log('Sending message:', content);
       setMessages((prev) => [...prev, message]);
-      socket.send(JSON.stringify({ content: content.trim() }));
+      setIsTyping(true);
+      
+      try {
+        socket.send(JSON.stringify({ content: content.trim() }));
+      } catch (error) {
+        console.error('Error sending WebSocket message:', error);
+        setIsTyping(false);
+      }
     },
     [socket]
   );

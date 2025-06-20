@@ -29,11 +29,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onFeedbac
           {message.agent_type && <div className={styles.agentType}>Type: {message.agent_type}</div>}
           {message.answer_type && <div className={styles.answerType}>Answer: {message.answer_type}</div>}
           {message.intent && <div className={styles.intent}>Intent: {message.intent}</div>}
-          {message.intent_data && (
-            <div className={styles.intentData}>
-              <pre>{JSON.stringify(message.intent_data, null, 2)}</pre>
-            </div>
-          )}
+          {/* Removed raw JSON display of intent_data for cleaner UI */}
           <button className={styles.feedbackButton} onClick={onFeedbackClick}>
             Feedback
           </button>

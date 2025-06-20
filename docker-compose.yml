@@ -1,32 +1,63 @@
+# Docker Compose Configuration for Customer Support AI System
+# 
+# This file defines the complete multi-service architecture for the customer support
+# application, including database, caching, backend API, and frontend services.
+# All services are configured with health checks, proper networking, and dependency
+# management for reliable deployment and development.
+#
+# Service Architecture:
+# - PostgreSQL with pgvector extension for vector search capabilities
+# - Redis for caching and session management
+# - Python FastAPI backend with AI integration
+# - React frontend with modern UI components
+# - Shared monitoring network for observability
+#
+# The configuration supports both development and production deployment patterns
+# with environment variable configuration and volume mounting for live development.
+
 version: "3.8"
 
 services:
+  # PostgreSQL Database Service with Vector Search Support
+  # Provides persistent storage for knowledge base, conversations, and analytics
+  # Uses pgvector extension for semantic search capabilities
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg16  # PostgreSQL 16 with pgvector extension pre-installed
     environment:
-      POSTGRES_DB: customer_support
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      # Database configuration for customer support application
+      POSTGRES_DB: customer_support    # Main application database
+      POSTGRES_USER: postgres          # Database superuser
+      POSTGRES_PASSWORD: password      # TODO: Use secrets in production
     ports:
+      # Map container port 5432 to host port 5433 to avoid conflicts
       - "5433:5433"
     volumes:
+      # Persistent data storage for database files
       - postgres_data:/var/lib/postgresql/data
+      # Auto-run migration scripts on container startup
       - ./backend/src/migrations:/docker-entrypoint-initdb.d
     healthcheck:
+      # Regular health checks to ensure database availability
+      # Used by dependent services to wait for database readiness
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 5s    # Check every 5 seconds
+      timeout: 5s     # 5 second timeout per check
+      retries: 5      # 5 consecutive failures before marking unhealthy
     networks:
-      - monitoring
+      - monitoring    # Connect to monitoring network for observability
 
+  # Redis Caching Service
+  # Provides fast in-memory storage for session data, caching, and real-time features
+  # Essential for WebSocket session management and API response caching
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine  # Lightweight Alpine Linux version for efficiency
     ports:
-      - "6379:6379"
+      - "6379:6379"  # Standard Redis port mapping
     volumes:
+      # Persistent storage for Redis data (optional but recommended)
       - redis_data:/data
     healthcheck:
+      # Simple Redis health check using built-in ping command
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
@@ -34,43 +65,69 @@ services:
     networks:
       - monitoring
 
+  # Backend API Service
+  # Python FastAPI application with AI integration and business logic
+  # Handles chat processing, intent classification, and knowledge base search
   backend:
-    build: ./backend
+    build: ./backend  # Build from local Dockerfile in backend directory
     ports:
-      - "8000:8000"
+      - "8000:8000"   # Map FastAPI default port
     environment:
+      # Database connection string for async PostgreSQL operations
       DATABASE_URL: postgresql+asyncpg://postgres:password@postgres:5433/customer_support
+      # Redis connection for caching and session storage
       REDIS_URL: redis://redis:6379
+      # OpenAI API key for LLM integration (from environment variable)
       OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
+      # Wait for database and cache to be healthy before starting
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
+      # Mount source code for development hot-reloading
       - ./backend:/app
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - monitoring
 
+  # Frontend Web Application Service
+  # React/TypeScript application with modern UI components
+  # Provides user interface for chat, analytics, and system management
   frontend:
-    build: ./frontend
+    build: ./frontend  # Build from local Dockerfile in frontend directory
     ports:
-      - "3000:3000"
+      - "3000:3000"    # Standard React development server port
     volumes:
+      # Mount source code for development hot-reloading
       - ./frontend:/app
+      # Preserve node_modules for faster builds
       - /app/node_modules
     environment:
+      # API endpoint configuration for frontend-backend communication
       VITE_API_URL: http://localhost:8000
     depends_on:
+      # Frontend requires backend API to be available
       - backend
     networks:
       - monitoring
 
+# Named Volume Definitions
+# Persistent storage that survives container restarts and recreations
 volumes:
+  # PostgreSQL data persistence
+  # Critical for maintaining database state across deployments
   postgres_data:
+  
+  # Redis data persistence (optional but recommended for production)
+  # Maintains cache state and session data across restarts
   redis_data:
 
+# Network Configuration
+# Isolated network for service communication and monitoring integration
 networks:
+  # Monitoring network enables integration with Prometheus, Grafana, etc.
+  # All services join this network for observability and metrics collection
   monitoring:
-    driver: bridge 
+    driver: bridge  # Standard Docker bridge network for container communication 

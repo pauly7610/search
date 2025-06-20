@@ -2,9 +2,26 @@
 
 ## 🏗️ System Architecture
 
-The **Xfinity Agentic AI Demo Platform** is a comprehensive, production-ready customer support system built on modern microservices architecture with enterprise-grade monitoring, enhanced AI capabilities, and a sophisticated user interface.
+The **Xfinity Agentic AI Demo Platform** is a comprehensive, production-ready customer support system built on modern microservices architecture with **enterprise-grade WebSocket communication**, enhanced AI capabilities, sophisticated monitoring, and a modern user interface.
 
 ## 🎯 Core Components
+
+### **🔌 Enterprise-Grade WebSocket Layer**
+
+#### **Robust Connection Management**
+
+- **Connection Manager**: Client tracking with unique IDs and metadata
+- **Automatic Reconnection**: Exponential backoff strategy for connection resilience
+- **Heartbeat Keep-Alive**: Ping/pong mechanism prevents connection timeouts
+- **Error Recovery**: Graceful handling of network issues without breaking chat flow
+- **Real-time Monitoring**: Connection statistics and health tracking
+
+#### **Message Reliability**
+
+- **Delivery Confirmation**: Message acknowledgment and retry logic
+- **Queue Management**: Reliable message delivery with proper error handling
+- **Connection State Tracking**: Real-time connection health monitoring
+- **Performance Optimization**: Connection pooling and message batching
 
 ### **🤖 Intelligent Backend (FastAPI, LangChain, OpenAI)**
 
@@ -13,602 +30,516 @@ The **Xfinity Agentic AI Demo Platform** is a comprehensive, production-ready cu
 - **Tech Support Agent**: Hardware troubleshooting, connectivity issues, equipment setup
 - **Billing Agent**: Payment processing, plan management, account inquiries
 - **General Agent**: Company policies, service information, general inquiries
-- **Coordinator Agent**: Intent classification and intelligent routing
+- **Coordinator Agent**: Enhanced intent classification and intelligent routing
 
-#### **Enhanced Knowledge Base Engine**
+#### **Enhanced Natural Language Understanding**
 
-- **Natural Language Processing**: Advanced keyword normalization and matching
-- **Category Name Matching**: Searches both keywords and category names
-- **Bidirectional Substring Matching**: Flexible pattern recognition
-- **Semantic Search Foundation**: Vector embeddings for future enhancement
-- **LLM Fallback**: OpenAI GPT integration for complex queries
+- **Local Intent Service**: Fast, reliable intent classification with cloud fallback
+- **Advanced Pattern Matching**: Multi-pattern matching with confidence scoring
+- **Semantic Knowledge Base**: Enhanced search with normalized keyword processing
+- **Query Preprocessing**: Handles punctuation, spaces, case variations
+- **Confidence Scoring**: Intent classification with reliability metrics
 
 #### **Production Features**
 
-- **Real-time & REST APIs**: WebSocket and traditional HTTP endpoints
-- **Analytics Tracking**: Comprehensive metrics collection and business intelligence
+- **Enhanced WebSocket & REST APIs**: Real-time and traditional HTTP endpoints with robust error handling
+- **Connection Analytics**: Comprehensive WebSocket metrics collection
 - **Async Operations**: High-performance async/await patterns
-- **Monitoring Integration**: Prometheus metrics and structured logging
+- **Monitoring Integration**: Prometheus metrics with WebSocket-specific tracking
 
 ### **🎨 Modern Frontend (React, TypeScript, Tailwind CSS)**
+
+#### **Enhanced Real-time Communication**
+
+- **Robust WebSocket Integration**: Enterprise-grade messaging with comprehensive error handling
+- **Connection Status Indicators**: Visual feedback for WebSocket connection health
+- **Automatic Reconnection**: Exponential backoff with user feedback
+- **Message Reliability**: Delivery confirmation and error recovery
 
 #### **Advanced UI/UX System**
 
 - **Dark/Light Theme Toggle**: Professional theme system with CSS variables
-- **Interactive Analytics Dashboard**: Advanced Recharts visualizations with gradients
+- **Interactive Analytics Dashboard**: Advanced Recharts visualizations with WebSocket metrics
 - **Responsive Design**: Mobile-first approach with adaptive layouts
-- **Real-time Chat Interface**: WebSocket-powered messaging with typing indicators
+- **Enhanced Chat Interface**: Rich message display with agent information and confidence scores
 
 #### **Component Architecture**
 
-- **Modular Components**: Reusable UI elements with consistent design system
-- **State Management**: Zustand for lightweight, predictable state handling
-- **Type Safety**: Comprehensive TypeScript integration
-- **Performance Optimization**: Code splitting and lazy loading
+- **Enhanced Hook System**: Robust WebSocket and chat hooks with error handling
+- **State Management**: Zustand for lightweight, predictable state handling with connection tracking
+- **Type Safety**: Comprehensive TypeScript integration for WebSocket events
+- **Performance Optimization**: Code splitting, lazy loading, and memory management
 
 ### **📊 Analytics & Business Intelligence**
 
-#### **Real-time Metrics**
+#### **Enhanced Real-time Metrics**
 
 - **Chat Performance**: Volume trends, response times, satisfaction scores
-- **AI Effectiveness**: Knowledge base hit rates, LLM fallback frequency
+- **WebSocket Analytics**: Connection count, message throughput, error rates
+- **AI Effectiveness**: Knowledge base hit rates, intent confidence, LLM fallback frequency
 - **User Experience**: Session analytics, feature usage, engagement patterns
-- **System Health**: API performance, database metrics, error tracking
+- **System Health**: API performance, database metrics, connection health tracking
 
 #### **Visual Dashboards**
 
 - **Interactive Charts**: Gradient-filled area charts, radial progress indicators
-- **Performance Metrics**: Real-time system monitoring with hover effects
+- **WebSocket Monitoring**: Real-time connection analytics and performance metrics
 - **Business KPIs**: Customer satisfaction, resolution rates, agent efficiency
-- **Trend Analysis**: Historical data and predictive insights
+- **Connection Analytics**: WebSocket performance monitoring and error tracking
 
 ## 🔄 Enhanced Data Flow
 
-### **Message Processing Pipeline**
+### **WebSocket Message Processing Pipeline**
 
 ```mermaid
 graph TD
-    A[User Message] --> B[WebSocket/REST API]
-    B --> C[Message Validation]
-    C --> D[Intent Classification]
-    D --> E{Agent Selection}
-    E -->|Technical Issues| F[Tech Support Agent]
-    E -->|Account/Billing| G[Billing Agent]
-    E -->|General Questions| H[General Agent]
-    F --> I[Enhanced KB Search]
-    G --> I
-    H --> I
-    I --> J{Match Quality}
-    J -->|High Confidence| K[KB Response]
-    J -->|Low Confidence| L[LLM Fallback]
-    K --> M[Response Enrichment]
-    L --> M
-    M --> N[Analytics Logging]
-    N --> O[Real-time Response]
-    O --> P[User Interface Update]
+    A[User Message] --> B[WebSocket Connection Manager]
+    B --> C[Client Authentication & Tracking]
+    C --> D[Message Validation & Parsing]
+    D --> E[Enhanced Intent Classification]
+    E --> F{Confidence Check}
+    F -->|High Confidence| G[Agent Selection]
+    F -->|Low Confidence| H[Local Intent Service]
+    H --> G
+    G -->|Technical Issues| I[Tech Support Agent]
+    G -->|Account/Billing| J[Billing Agent]
+    G -->|General Questions| K[General Agent]
+    I --> L[Enhanced Semantic Search]
+    J --> L
+    K --> L
+    L --> M{Knowledge Base Match}
+    M -->|High Confidence| N[KB Response]
+    M -->|Low Confidence| O[LLM Fallback]
+    N --> P[Response Enrichment & Metadata]
+    O --> P
+    P --> Q[Analytics Logging]
+    Q --> R[WebSocket Response Delivery]
+    R --> S[Connection Health Check]
+    S --> T[User Interface Update]
+    T --> U[Connection Status Update]
+```
+
+### **Enhanced WebSocket Connection Lifecycle**
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant CM as Connection Manager
+    participant WS as WebSocket Handler
+    participant AI as AI Agent System
+    participant DB as Database
+    participant M as Metrics
+
+    C->>CM: Connection Request
+    CM->>CM: Generate Client ID
+    CM->>WS: Accept Connection
+    WS->>CM: Register Client
+    CM->>M: Log Connection Event
+
+    loop Heartbeat
+        WS->>C: Ping
+        C->>WS: Pong
+        WS->>CM: Update Activity
+    end
+
+    C->>WS: Send Message
+    WS->>AI: Process Message
+    AI->>DB: Knowledge Base Search
+    AI->>WS: Return Response
+    WS->>C: Send Response
+    WS->>M: Log Metrics
+
+    Note over C,M: Error Handling
+    WS-->>CM: Connection Error
+    CM->>CM: Cleanup Client
+    CM->>M: Log Disconnection
 ```
 
 ### **Enhanced Knowledge Base Matching**
 
 ```python
-def enhanced_search_pipeline(query: str) -> dict:
-    """Enhanced knowledge base search with multiple matching strategies"""
+def enhanced_search_pipeline(query: str, client_id: str = None) -> dict:
+    """Enhanced knowledge base search with comprehensive matching strategies"""
 
-    # 1. Normalize input query
-    normalized_query = normalize_text(query)
+    # 1. Query preprocessing and normalization
+    normalized_query = preprocess_query(query)
     query_words = set(normalized_query.split())
 
-    # 2. Multi-level matching
+    # 2. Local intent classification with confidence scoring
+    intent_result = local_intent_service.classify_intent(query)
+    if intent_result["confidence"] > 0.8:
+        agent_type = intent_result["agent_type"]
+    else:
+        agent_type = None
+
+    # 3. Multi-level semantic search
+    search_results = []
+
     for agent_name, agent_data in knowledge_base["agents"].items():
+        # Skip if agent type is specified and doesn't match
+        if agent_type and agent_name != agent_type:
+            continue
+
         for category_name, category_data in agent_data["categories"].items():
+            confidence = 0.0
 
-            # Category name matching
+            # Exact category name matching
             if normalized_query in normalize_text(category_name):
-                return create_response(category_data, confidence=0.95)
+                confidence = 0.95
 
-            # Keyword overlap matching (≥2 words)
+            # Enhanced keyword overlap matching
             category_keywords = set(normalize_text(" ".join(category_data["keywords"])).split())
             overlap = len(query_words.intersection(category_keywords))
             if overlap >= 2:
-                confidence = min(0.9, overlap * 0.3)
-                return create_response(category_data, confidence=confidence)
+                confidence = max(confidence, min(0.9, overlap * 0.25 + 0.5))
 
-            # Substring matching with scoring
+            # Bidirectional substring matching
             for keyword in category_data["keywords"]:
                 if keyword.lower() in normalized_query or normalized_query in keyword.lower():
-                    return create_response(category_data, confidence=0.8)
+                    confidence = max(confidence, 0.75)
 
-    # 3. Semantic similarity (future enhancement)
-    # semantic_score = compute_similarity(query, kb_embeddings)
+            # Pattern matching with weights
+            pattern_score = calculate_pattern_score(query, category_data.get("patterns", []))
+            confidence = max(confidence, pattern_score)
 
-    # 4. LLM fallback for unmatched queries
-    return llm_fallback(query)
+            if confidence > 0.6:
+                search_results.append({
+                    "category": category_data,
+                    "confidence": confidence,
+                    "agent": agent_name,
+                    "matched_keywords": list(query_words.intersection(category_keywords))
+                })
+
+    # 4. Rank and return best match
+    if search_results:
+        best_match = max(search_results, key=lambda x: x["confidence"])
+        return create_enhanced_response(best_match, client_id)
+
+    # 5. LLM fallback for unmatched queries
+    return llm_fallback(query, client_id, intent_result)
+
+def preprocess_query(query: str) -> str:
+    """Enhanced query preprocessing"""
+    # Remove punctuation, normalize spaces, convert to lowercase
+    normalized = re.sub(r'[^\w\s]', ' ', query.lower())
+    return ' '.join(normalized.split())
+
+def calculate_pattern_score(query: str, patterns: List[Dict]) -> float:
+    """Calculate confidence score based on pattern matching"""
+    max_score = 0.0
+    for pattern_data in patterns:
+        pattern = pattern_data["pattern"]
+        weight = pattern_data.get("weight", 0.5)
+
+        if re.search(pattern, query, re.IGNORECASE):
+            max_score = max(max_score, weight)
+
+    return max_score
 ```
 
-## 🧠 Multi-Agent Intelligence
+## 🧠 Enhanced Multi-Agent Intelligence
 
-### **Agent Specialization**
-
-#### **Tech Support Agent**
-
-```json
-{
-  "specialization": "Technical issues and troubleshooting",
-  "categories": {
-    "connectivity_issues": {
-      "keywords": [
-        "internet",
-        "wifi",
-        "connection",
-        "outage",
-        "down",
-        "slow",
-        "not working"
-      ],
-      "natural_variations": [
-        "internet is out",
-        "wifi not working",
-        "can't connect"
-      ]
-    },
-    "hardware_troubleshooting": {
-      "keywords": ["modem", "router", "cable box", "remote", "equipment"],
-      "natural_variations": [
-        "modem problems",
-        "router issues",
-        "cable box not working"
-      ]
-    }
-  }
-}
-```
-
-#### **Billing Agent**
-
-```json
-{
-  "specialization": "Account management and billing",
-  "categories": {
-    "payment_issues": {
-      "keywords": ["payment", "bill", "charge", "autopay", "credit card"],
-      "natural_variations": [
-        "can't pay bill",
-        "payment problems",
-        "billing issues"
-      ]
-    },
-    "plan_management": {
-      "keywords": ["upgrade", "downgrade", "plan", "package", "service"],
-      "natural_variations": [
-        "change my plan",
-        "upgrade service",
-        "different package"
-      ]
-    }
-  }
-}
-```
-
-### **Intent Classification Engine**
+### **Advanced Intent Classification**
 
 ```python
-class IntentClassifier:
-    """Advanced intent classification with confidence scoring"""
+class LocalIntentService:
+    """
+    Local intent classification service with enhanced pattern matching.
 
-    def classify_intent(self, message: str) -> dict:
-        # Technical keywords
-        tech_keywords = ["internet", "wifi", "modem", "connection", "slow", "outage"]
-        # Billing keywords
-        billing_keywords = ["bill", "payment", "charge", "plan", "upgrade", "account"]
-        # General keywords
-        general_keywords = ["hours", "location", "contact", "policy", "information"]
+    Features:
+    - Multi-pattern matching with confidence scoring
+    - Keyword normalization and preprocessing
+    - Fallback to cloud services
+    - Performance optimization
+    """
 
+    def __init__(self):
+        self.billing_patterns = [
+            {"pattern": r"\b(bill|billing|charge|cost|expensive|payment)\b", "weight": 0.9},
+            {"pattern": r"\b(cancel|disconnect|service)\b", "weight": 0.7},
+            {"pattern": r"\b(refund|credit|discount)\b", "weight": 0.8}
+        ]
+
+        self.technical_patterns = [
+            {"pattern": r"\b(internet|wifi|connection|slow|down|outage)\b", "weight": 0.9},
+            {"pattern": r"\b(router|modem|equipment|device)\b", "weight": 0.8},
+            {"pattern": r"\b(speed|performance|lag|buffering)\b", "weight": 0.7}
+        ]
+
+        self.general_patterns = [
+            {"pattern": r"\b(hours|location|contact|help|support)\b", "weight": 0.8},
+            {"pattern": r"\b(policy|terms|conditions)\b", "weight": 0.7}
+        ]
+
+    def classify_intent(self, query: str) -> Dict[str, Any]:
+        """
+        Classify intent with confidence scoring.
+
+        Returns:
+        - intent: Classified category
+        - confidence: Confidence score (0-1)
+        - matched_patterns: Patterns that matched
+        - agent_type: Recommended agent
+        """
+        normalized_query = query.lower()
+
+        # Calculate scores for each category
+        billing_score = self._calculate_pattern_score(normalized_query, self.billing_patterns)
+        technical_score = self._calculate_pattern_score(normalized_query, self.technical_patterns)
+        general_score = self._calculate_pattern_score(normalized_query, self.general_patterns)
+
+        # Determine best match
         scores = {
-            "tech_support": self.calculate_score(message, tech_keywords),
-            "billing": self.calculate_score(message, billing_keywords),
-            "general": self.calculate_score(message, general_keywords)
+            "billing": billing_score,
+            "technical": technical_score,
+            "general": general_score
         }
 
-        intent = max(scores, key=scores.get)
-        confidence = scores[intent]
+        best_intent = max(scores, key=scores.get)
+        confidence = scores[best_intent]
+
+        # Map intent to agent type
+        agent_mapping = {
+            "billing": "billing",
+            "technical": "tech_support",
+            "general": "general"
+        }
 
         return {
-            "intent": intent,
+            "intent": best_intent,
             "confidence": confidence,
-            "all_scores": scores
+            "agent_type": agent_mapping[best_intent],
+            "scores": scores,
+            "query": query
+        }
+
+    def _calculate_pattern_score(self, query: str, patterns: List[Dict]) -> float:
+        """Calculate weighted score for pattern matches"""
+        total_score = 0.0
+        for pattern_data in patterns:
+            if re.search(pattern_data["pattern"], query, re.IGNORECASE):
+                total_score += pattern_data["weight"]
+
+        # Normalize score to 0-1 range
+        return min(1.0, total_score)
+```
+
+### **WebSocket Connection Manager**
+
+```python
+class ChatConnectionManager:
+    """
+    Robust WebSocket connection manager for multi-client chat support.
+
+    Features:
+    - Client identification and tracking
+    - Connection state management
+    - Error handling for failed connections
+    - Graceful disconnection handling
+    - Performance monitoring
+    """
+
+    def __init__(self):
+        self.active_connections: Dict[str, WebSocket] = {}
+        self.connection_metadata: Dict[str, Dict[str, Any]] = {}
+        self.message_queues: Dict[str, List[Dict]] = {}
+
+    async def connect(self, websocket: WebSocket, client_id: str):
+        """Accept connection and register client with metadata tracking"""
+        await websocket.accept()
+        self.active_connections[client_id] = websocket
+        self.connection_metadata[client_id] = {
+            "connected_at": datetime.utcnow().isoformat(),
+            "message_count": 0,
+            "last_activity": datetime.utcnow().isoformat(),
+            "user_agent": websocket.headers.get("user-agent", "unknown"),
+            "ip_address": websocket.client.host if websocket.client else "unknown"
+        }
+
+        # Process any queued messages
+        await self._process_queued_messages(client_id)
+
+        logger.info(f"Client {client_id} connected. Total connections: {len(self.active_connections)}")
+
+    async def disconnect(self, client_id: str):
+        """Remove client and cleanup metadata"""
+        if client_id in self.active_connections:
+            del self.active_connections[client_id]
+        if client_id in self.connection_metadata:
+            connection_duration = self._calculate_connection_duration(client_id)
+            logger.info(f"Client {client_id} disconnected after {connection_duration}s")
+            del self.connection_metadata[client_id]
+        if client_id in self.message_queues:
+            del self.message_queues[client_id]
+
+        logger.info(f"Client {client_id} disconnected. Total connections: {len(self.active_connections)}")
+
+    async def send_personal_message(self, message: Dict[str, Any], client_id: str):
+        """Send message to specific client with error handling and retry logic"""
+        if client_id in self.active_connections:
+            websocket = self.active_connections[client_id]
+            try:
+                await websocket.send_json(message)
+
+                # Update activity tracking
+                if client_id in self.connection_metadata:
+                    self.connection_metadata[client_id]["last_activity"] = datetime.utcnow().isoformat()
+                    self.connection_metadata[client_id]["message_count"] += 1
+
+                logger.debug(f"Message sent to client {client_id}")
+                return True
+
+            except Exception as e:
+                logger.error(f"Failed to send message to client {client_id}: {e}")
+                # Queue message for retry or cleanup connection
+                await self._handle_send_error(client_id, message, e)
+                return False
+        else:
+            # Queue message if client is not connected
+            self._queue_message(client_id, message)
+            return False
+
+    def get_connection_stats(self) -> Dict[str, Any]:
+        """Get comprehensive connection statistics"""
+        total_connections = len(self.active_connections)
+        total_messages = sum(
+            metadata.get("message_count", 0)
+            for metadata in self.connection_metadata.values()
+        )
+
+        return {
+            "active_connections": total_connections,
+            "total_messages_sent": total_messages,
+            "average_messages_per_connection": total_messages / max(total_connections, 1),
+            "connection_details": self.connection_metadata,
+            "queued_messages": sum(len(queue) for queue in self.message_queues.values())
         }
 ```
 
-## 🎨 Modern UI Architecture
+## 🚀 Recent Architecture Enhancements
 
-### **Theme System**
+### **WebSocket Reliability Improvements**
 
-```css
-/* CSS Variables for comprehensive theming */
-:root {
-  /* Primary Colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #1d4ed8;
-  --color-secondary: #10b981;
+- ✅ Implemented enterprise-grade connection manager with client tracking
+- ✅ Added comprehensive error handling and recovery mechanisms
+- ✅ Introduced heartbeat keep-alive with ping/pong protocol
+- ✅ Enhanced reconnection strategies with exponential backoff
+- ✅ Added detailed logging and connection monitoring
 
-  /* Background System */
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-surface-hover: #334155;
+### **Natural Language Understanding**
 
-  /* Typography */
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-text-inverse: #0f172a;
+- ✅ Advanced intent classification with confidence scoring
+- ✅ Local intent service with cloud fallback capabilities
+- ✅ Enhanced semantic search with multi-level matching
+- ✅ Improved pattern matching algorithms with weighted scoring
+- ✅ Query preprocessing and normalization
 
-  /* Interactive Elements */
-  --color-border: #334155;
-  --color-focus: #3b82f6;
-  --color-error: #ef4444;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-}
+### **Production Readiness**
 
-[data-theme="light"] {
-  --color-background: #ffffff;
-  --color-surface: #f8fafc;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
-  /* Light theme overrides */
-}
-```
+- ✅ Enterprise-grade WebSocket architecture
+- ✅ Comprehensive metrics and monitoring with WebSocket-specific tracking
+- ✅ Graceful error handling and recovery mechanisms
+- ✅ Connection health tracking and analytics
+- ✅ Performance optimization and scaling considerations
 
-### **Component Architecture**
+## 📊 Enhanced Monitoring & Observability
 
-```typescript
-// Modern component structure with TypeScript
-interface ChatInterfaceProps {
-  messages: Message[];
-  onSendMessage: (content: string) => void;
-  isTyping: boolean;
-  theme: "light" | "dark";
-}
-
-export const ChatInterface: React.FC<ChatInterfaceProps> = ({
-  messages,
-  onSendMessage,
-  isTyping,
-  theme,
-}) => {
-  const { socket, isConnected } = useWebSocket(WS_URL);
-  const { analytics } = useAnalytics();
-
-  return (
-    <div className={cn(styles.container, styles[theme])}>
-      <MessageList messages={messages} />
-      <TypingIndicator visible={isTyping} />
-      <MessageInput onSend={onSendMessage} disabled={!isConnected} />
-    </div>
-  );
-};
-```
-
-## 📊 Analytics & Monitoring Architecture
-
-### **Metrics Collection**
+### **WebSocket Metrics**
 
 ```python
-# Backend metrics instrumentation
-from prometheus_client import Counter, Histogram, Gauge
+# WebSocket-specific Prometheus metrics
+websocket_connections_total = Gauge('websocket_connections_total', 'Active WebSocket connections')
+websocket_messages_total = Counter('websocket_messages_total', 'Total WebSocket messages', ['direction', 'client_type'])
+websocket_connection_duration = Histogram('websocket_connection_duration_seconds', 'Connection duration')
+websocket_errors_total = Counter('websocket_errors_total', 'WebSocket errors', ['error_type', 'client_id'])
+websocket_reconnections_total = Counter('websocket_reconnections_total', 'WebSocket reconnection attempts')
 
-# Chat metrics
-chat_messages_total = Counter(
-    'chat_messages_total',
-    'Total chat messages processed',
-    ['agent', 'intent', 'source']
-)
-
-chat_response_time = Histogram(
-    'chat_response_time_seconds',
-    'Chat response processing time',
-    ['agent']
-)
-
-# Knowledge base metrics
-kb_hits_total = Counter(
-    'knowledge_base_hits_total',
-    'Knowledge base search hits',
-    ['agent', 'category', 'match_type']
-)
-
-# User experience metrics
-user_satisfaction = Histogram(
-    'user_satisfaction_score',
-    'User satisfaction ratings',
-    buckets=[1, 2, 3, 4, 5]
-)
+# Enhanced chat metrics
+intent_classification_confidence = Histogram('intent_classification_confidence', 'Intent confidence scores', ['intent_type'])
+knowledge_base_hits = Counter('knowledge_base_hits_total', 'KB search hits', ['agent', 'confidence_level'])
+chat_response_time = Histogram('chat_response_time_seconds', 'Chat response time', ['agent_type', 'response_source'])
 ```
 
-### **Real-time Dashboard Integration**
-
-```typescript
-// Frontend analytics integration
-const AnalyticsDashboard: React.FC = () => {
-  const { data: metrics } = useAnalytics({
-    refreshInterval: 30000,
-    metrics: [
-      "chat_volume",
-      "response_times",
-      "satisfaction_scores",
-      "intent_distribution",
-      "kb_effectiveness",
-    ],
-  });
-
-  return (
-    <div className={styles.dashboard}>
-      <MetricsCard
-        title="Chat Volume"
-        value={metrics.totalChats}
-        trend="up"
-        trendValue={12}
-      />
-      <ResponseTimeChart data={metrics.responseTimes} />
-      <SatisfactionRadialChart score={metrics.avgSatisfaction} />
-      <IntentDistributionChart data={metrics.intentBreakdown} />
-    </div>
-  );
-};
-```
-
-## 🔬 MLOps & Data Science Integration
-
-### **Machine Learning Pipeline**
+### **Health Check Endpoints**
 
 ```python
-# MLflow experiment tracking
-import mlflow
-import mlflow.sklearn
+@router.get("/health")
+async def health_check():
+    """Comprehensive health check including WebSocket status"""
+    websocket_stats = connection_manager.get_connection_stats()
 
-class IntentClassificationPipeline:
-    """ML pipeline for intent classification improvement"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "services": {
+            "database": await check_database_health(),
+            "redis": await check_redis_health(),
+            "websocket": {
+                "status": "healthy",
+                "active_connections": websocket_stats["active_connections"],
+                "total_messages": websocket_stats["total_messages_sent"]
+            }
+        },
+        "websocket_stats": websocket_stats
+    }
 
-    def __init__(self):
-        self.experiment_name = "intent-classification"
-        mlflow.set_experiment(self.experiment_name)
-
-    def train_model(self, training_data):
-        with mlflow.start_run():
-            # Model training
-            model = self.create_model()
-            model.fit(training_data.X, training_data.y)
-
-            # Metrics logging
-            accuracy = model.score(test_data.X, test_data.y)
-            mlflow.log_metric("accuracy", accuracy)
-            mlflow.log_metric("f1_score", f1_score(test_data.y, predictions))
-
-            # Model registration
-            mlflow.sklearn.log_model(model, "intent_classifier")
-
-    def deploy_model(self, model_uri):
-        """Deploy trained model to production"""
-        model = mlflow.sklearn.load_model(model_uri)
-        return model
+@router.get("/ws/stats")
+async def websocket_stats():
+    """Detailed WebSocket connection statistics"""
+    return connection_manager.get_connection_stats()
 ```
 
-### **Feedback Loop Integration**
+## 🔧 Configuration & Deployment
+
+### **WebSocket Configuration**
 
 ```python
-class FeedbackProcessor:
-    """Process user feedback for continuous improvement"""
-
-    def collect_feedback(self, conversation_id: str, rating: int, comments: str):
-        feedback_data = {
-            "conversation_id": conversation_id,
-            "rating": rating,
-            "comments": comments,
-            "timestamp": datetime.utcnow(),
-            "context": self.get_conversation_context(conversation_id)
-        }
-
-        # Store for ML training
-        self.store_feedback(feedback_data)
-
-        # Update real-time metrics
-        user_satisfaction.observe(rating)
-
-        # Trigger retraining if needed
-        if self.should_retrain():
-            self.trigger_model_retraining()
-```
-
-## 🛡️ Security & Production Readiness
-
-### **Authentication & Authorization**
-
-```python
-# JWT-based authentication
-from fastapi_users import FastAPIUsers
-from fastapi_users.authentication import JWTAuthentication
-
-class AuthenticationManager:
-    """Secure authentication and authorization"""
-
-    def __init__(self):
-        self.jwt_auth = JWTAuthentication(
-            secret=settings.JWT_SECRET,
-            lifetime_seconds=3600,
-            tokenUrl="/auth/token"
-        )
-
-    async def authenticate_user(self, credentials: UserCredentials):
-        user = await self.verify_credentials(credentials)
-        if user:
-            token = await self.jwt_auth.get_login_response(user)
-            return token
-        raise AuthenticationError("Invalid credentials")
-```
-
-### **Input Validation & Sanitization**
-
-```python
-from pydantic import BaseModel, validator
-
-class ChatMessage(BaseModel):
-    content: str
-    role: str
-    timestamp: datetime
-
-    @validator('content')
-    def validate_content(cls, v):
-        if len(v) > 1000:
-            raise ValueError('Message too long')
-        # Sanitize input
-        return html.escape(v.strip())
-
-    @validator('role')
-    def validate_role(cls, v):
-        if v not in ['user', 'assistant']:
-            raise ValueError('Invalid role')
-        return v
-```
-
-## 🔧 Performance Optimization
-
-### **Caching Strategy**
-
-```python
-# Redis-based caching
-import redis
-from functools import wraps
-
-class CacheManager:
-    """Intelligent caching for performance optimization"""
-
-    def __init__(self):
-        self.redis_client = redis.Redis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            decode_responses=True
-        )
-
-    def cache_kb_results(self, query: str, result: dict, ttl: int = 3600):
-        """Cache knowledge base search results"""
-        cache_key = f"kb_search:{hashlib.md5(query.encode()).hexdigest()}"
-        self.redis_client.setex(cache_key, ttl, json.dumps(result))
-
-    def get_cached_result(self, query: str) -> Optional[dict]:
-        """Retrieve cached knowledge base result"""
-        cache_key = f"kb_search:{hashlib.md5(query.encode()).hexdigest()}"
-        cached = self.redis_client.get(cache_key)
-        return json.loads(cached) if cached else None
-```
-
-### **Database Optimization**
-
-```python
-# Async database operations with connection pooling
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-
-class DatabaseManager:
-    """Optimized database operations"""
-
-    def __init__(self):
-        self.engine = create_async_engine(
-            settings.DATABASE_URL,
-            pool_size=20,
-            max_overflow=30,
-            pool_pre_ping=True,
-            echo=settings.DEBUG
-        )
-
-    async def log_conversation(self, conversation_data: dict):
-        """Efficiently log conversation data"""
-        async with AsyncSession(self.engine) as session:
-            conversation = Conversation(**conversation_data)
-            session.add(conversation)
-            await session.commit()
-```
-
-## 🚀 Scalability & Deployment
-
-### **Horizontal Scaling**
-
-```yaml
-# Kubernetes horizontal pod autoscaler
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: backend-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: backend
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: chat_requests_per_second
-        target:
-          type: AverageValue
-          averageValue: "100"
-```
-
-### **Load Balancing Strategy**
-
-```nginx
-# Nginx configuration for load balancing
-upstream backend_servers {
-    least_conn;
-    server backend-1:8000 weight=3;
-    server backend-2:8000 weight=3;
-    server backend-3:8000 weight=2;
-
-    # Health checks
-    health_check interval=30s fails=3 passes=2;
-}
-
-location /api/ {
-    proxy_pass http://backend_servers;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-    # WebSocket upgrade
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+# WebSocket settings
+WEBSOCKET_CONFIG = {
+    "heartbeat_interval": 30,  # seconds
+    "max_connections": 1000,
+    "connection_timeout": 300,  # seconds
+    "message_queue_size": 100,
+    "reconnect_attempts": 5,
+    "reconnect_delay": 1000,  # milliseconds
+    "enable_compression": True,
+    "max_message_size": 1024 * 1024  # 1MB
 }
 ```
 
-## 🔮 Future Enhancements
+### **Scaling Considerations**
 
-### **Advanced AI Capabilities**
+#### **Horizontal Scaling**
 
-- **Custom Model Fine-tuning**: Domain-specific model training on organization data
-- **Multi-modal Support**: Image, voice, and document processing
-- **Predictive Analytics**: Proactive issue detection and resolution
-- **Advanced Reasoning**: Multi-step problem solving and workflow automation
+- **Load Balancing**: Sticky sessions for WebSocket connections
+- **Redis Pub/Sub**: Cross-instance message broadcasting
+- **Connection Sharding**: Distribute connections across instances
+- **Health Checks**: Proper load balancer configuration
 
-### **Enhanced User Experience**
+#### **Performance Optimization**
 
-- **Voice Integration**: Speech-to-text and text-to-speech capabilities
-- **Mobile Applications**: Native iOS and Android apps
-- **Accessibility Features**: Enhanced screen reader support and keyboard navigation
-- **Personalization**: User preference learning and adaptive interfaces
+- **Connection Pooling**: Efficient resource utilization
+- **Message Batching**: Reduce network overhead
+- **Compression**: Enable WebSocket compression for large messages
+- **Memory Management**: Proper cleanup and garbage collection
 
-### **Enterprise Features**
+## 🔒 Security & Compliance
 
-- **SSO Integration**: SAML, OIDC, Active Directory integration
-- **Advanced Security**: Zero-trust architecture and compliance frameworks
-- **Multi-tenancy**: Organization-specific customization and data isolation
-- **API Gateway**: Rate limiting, authentication, and request routing
+### **WebSocket Security**
+
+- **Authentication**: JWT token validation for WebSocket connections
+- **Rate Limiting**: Per-client message rate limiting
+- **Input Validation**: Comprehensive message validation and sanitization
+- **CORS Configuration**: Proper cross-origin resource sharing setup
+- **SSL/TLS**: Secure WebSocket connections (WSS) in production
+
+### **Data Privacy**
+
+- **Message Encryption**: End-to-end encryption for sensitive data
+- **Data Retention**: Configurable message history retention policies
+- **Audit Logging**: Comprehensive logging for compliance requirements
+- **GDPR Compliance**: Data anonymization and deletion capabilities
 
 ---
 
-This architecture provides a solid foundation for a production-ready customer support system with room for future enhancements and scaling. The modular design allows for independent development and deployment of components while maintaining system cohesion and performance.
+This enhanced architecture provides enterprise-grade reliability, comprehensive monitoring, and production-ready WebSocket communication while maintaining the sophisticated AI capabilities and modern user experience.

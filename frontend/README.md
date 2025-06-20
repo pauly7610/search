@@ -1,36 +1,48 @@
 # Frontend - Xfinity Agentic AI
 
-A modern, responsive frontend for the AI-powered customer support platform. Built with React, TypeScript, and Tailwind CSS, featuring a beautiful dark theme interface, real-time chat capabilities, and comprehensive analytics dashboard.
+A modern, responsive frontend for the AI-powered customer support platform. Built with React, TypeScript, and Tailwind CSS, featuring **enterprise-grade WebSocket communication**, a beautiful dark theme interface, real-time chat capabilities, and comprehensive analytics dashboard.
 
 ## ✨ Features
+
+### **🔌 Enterprise-Grade WebSocket Communication**
+
+- **Robust Connection Management**: Automatic reconnection with exponential backoff strategy
+- **Heartbeat Keep-Alive**: Ping/pong mechanism prevents connection timeouts
+- **Client Identification**: Unique client IDs for connection tracking and analytics
+- **Connection State Monitoring**: Real-time feedback on connection health and status
+- **Error Recovery**: Graceful handling of network issues without breaking chat flow
 
 ### **🎨 Modern UI/UX**
 
 - **Dark/Light Theme Toggle**: Professional dark theme with seamless light mode switching
 - **Advanced Analytics Dashboard**: Interactive Recharts visualizations with gradients and animations
+- **Connection Status Indicators**: Visual feedback for WebSocket connection health
 - **Responsive Design**: Mobile-first approach with adaptive layouts for all screen sizes
 - **Modern Components**: Clean, accessible UI components with consistent design system
 
-### **💬 Real-time Chat**
+### **💬 Enhanced Real-time Chat**
 
-- **WebSocket Integration**: Instant messaging with typing indicators and real-time responses
+- **Reliable WebSocket Integration**: Enterprise-grade messaging with comprehensive error handling
 - **Agent Visualization**: Clear display of AI agent type, intent classification, and response source
-- **Message Bubbles**: Distinct styling for user and assistant messages with timestamps
-- **Chat History**: Persistent conversation management with pagination
+- **Enhanced Message Bubbles**: Rich metadata display with agent information and confidence scores
+- **Typing Indicators**: Real-time feedback with improved reliability
+- **Chat History**: Persistent conversation management with pagination and state recovery
 
 ### **📊 Analytics & Insights**
 
 - **Interactive Dashboards**: Real-time metrics with hover effects and detailed tooltips
+- **WebSocket Metrics**: Connection analytics, message throughput, and error tracking
 - **Visual Charts**: Gradient-filled area charts, radial progress indicators, and trend lines
 - **Performance Metrics**: Chat volume, response times, satisfaction scores, and intent distribution
-- **Data Export**: Export capabilities for analytics data (coming soon)
+- **Connection Analytics**: Real-time WebSocket performance monitoring
 
 ### **🛠️ Developer Experience**
 
-- **TypeScript**: Full type safety with comprehensive type definitions
+- **TypeScript**: Full type safety with comprehensive type definitions for WebSocket events
 - **Modern Tooling**: Vite for fast development, ESLint for code quality, Prettier for formatting
-- **Component Architecture**: Modular, reusable components with clear separation of concerns
+- **Enhanced Hook Architecture**: Robust WebSocket and chat hooks with error handling
 - **State Management**: Zustand for lightweight, predictable state management
+- **Connection Debugging**: Comprehensive logging and debugging tools
 
 ## 🚀 Getting Started
 
@@ -58,6 +70,11 @@ VITE_API_URL=http://localhost:8000
 VITE_WS_URL=ws://localhost:8000
 VITE_SENTRY_DSN=your-sentry-dsn
 VITE_ENVIRONMENT=development
+
+# WebSocket Configuration
+VITE_WS_HEARTBEAT_INTERVAL=30000
+VITE_WS_RECONNECT_ATTEMPTS=5
+VITE_WS_RECONNECT_DELAY=1000
 ```
 
 ### 3. Development Server
@@ -90,18 +107,18 @@ frontend/
 ├── src/
 │   ├── components/               # Reusable UI components
 │   │   ├── analytics/           # Analytics dashboard components
-│   │   │   ├── Dashboard/       # Main analytics dashboard
+│   │   │   ├── Dashboard/       # Main analytics dashboard with WebSocket metrics
 │   │   │   └── MetricsCard/     # Individual metric displays
-│   │   ├── chat/               # Chat interface components
-│   │   │   ├── ChatInterface/   # Main chat container
-│   │   │   ├── MessageBubble/   # Individual message display
-│   │   │   ├── MessageInput/    # Message input with send button
-│   │   │   └── TypingIndicator/ # Real-time typing feedback
+│   │   ├── chat/               # Enhanced chat interface components
+│   │   │   ├── ChatInterface/   # Main chat container with connection status
+│   │   │   ├── MessageBubble/   # Rich message display with metadata
+│   │   │   ├── MessageInput/    # Message input with connection validation
+│   │   │   └── TypingIndicator/ # Reliable typing feedback
 │   │   ├── feedback/           # User feedback components
 │   │   │   ├── FeedbackButton/  # Feedback submission
 │   │   │   └── RatingControl/   # Star rating component
 │   │   ├── layout/             # Layout and navigation
-│   │   │   ├── Header/         # App header with theme toggle
+│   │   │   ├── Header/         # App header with connection status
 │   │   │   ├── Layout.tsx      # Main layout wrapper
 │   │   │   └── Navigation/     # Sidebar and tab navigation
 │   │   ├── ui/                 # Base UI components
@@ -113,19 +130,19 @@ frontend/
 │   │       ├── knowledge/      # Knowledge base interface
 │   │       ├── profile/        # User profile management
 │   │       └── settings/       # Application settings
-│   ├── hooks/                  # Custom React hooks
-│   │   ├── useAIChat.ts       # AI chat integration
+│   ├── hooks/                  # Enhanced React hooks
+│   │   ├── useAIChat.ts       # AI chat integration with error handling
 │   │   ├── useAnalytics.ts    # Analytics data fetching
-│   │   ├── useChat.ts         # Chat state management
+│   │   ├── useChat.ts         # Enhanced chat state management
 │   │   ├── useResponsive.ts   # Responsive design utilities
-│   │   └── useWebSocket.ts    # WebSocket connection management
+│   │   └── useWebSocket.ts    # Robust WebSocket connection management
 │   ├── services/              # External service integrations
 │   │   ├── api.ts            # REST API client
-│   │   ├── websocket.ts      # WebSocket client
+│   │   ├── websocket.ts      # Enhanced WebSocket client
 │   │   └── index.ts          # Service exports
 │   ├── store/                # State management
-│   │   ├── chatStore.ts      # Chat state (Zustand)
-│   │   ├── uiStore.ts        # UI state (theme, navigation)
+│   │   ├── chatStore.ts      # Chat state with connection tracking
+│   │   ├── uiStore.ts        # UI state (theme, navigation, connection status)
 │   │   └── index.ts          # Store exports
 │   ├── styles/               # Global styles and themes
 │   │   ├── animations.css    # CSS animations and transitions
@@ -134,12 +151,12 @@ frontend/
 │   │   └── globals.css       # Global CSS variables and resets
 │   ├── types/                # TypeScript type definitions
 │   │   ├── api.ts           # API response types
-│   │   ├── chat.ts          # Chat-related types
+│   │   ├── chat.ts          # Enhanced chat-related types
 │   │   ├── css.d.ts         # CSS module type declarations
 │   │   └── index.ts         # Type exports
 │   └── utils/               # Utility functions
 │       ├── animations.ts    # Animation helpers
-│       ├── constants.ts     # App constants
+│       ├── constants.ts     # App constants including WebSocket config
 │       └── formatters.ts    # Data formatting utilities
 ├── public/                  # Static assets
 │   ├── assets/             # Images, icons, and media
@@ -149,6 +166,80 @@ frontend/
 ├── vite.config.ts         # Vite build configuration
 └── tsconfig.json          # TypeScript configuration
 ```
+
+## 🔌 Enhanced WebSocket Architecture
+
+### **Robust Connection Management**
+
+```typescript
+// Enhanced WebSocket hook with enterprise features
+export const useWebSocket = (
+  url: string,
+  options: UseWebSocketOptions = {}
+) => {
+  const {
+    autoConnect = true,
+    reconnection = true,
+    reconnectionAttempts = 5,
+    reconnectionDelay = 1000,
+    heartbeatInterval = 30000,
+  } = options;
+
+  // Connection state management
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+
+  // Unique client identification
+  const clientIdRef = useRef<string>(generateClientId());
+
+  // Automatic reconnection with exponential backoff
+  // Heartbeat mechanism for connection health
+  // Comprehensive error handling and logging
+};
+```
+
+### **Enhanced Chat Hook**
+
+```typescript
+// Enhanced chat hook with robust error handling
+export const useChat = () => {
+  const { socket, isConnected, send, getConnectionState, clientId } =
+    useWebSocket("ws://localhost:8000/api/v1/chat/ws");
+
+  // Message handling with proper error recovery
+  const handleMessage = (event: MessageEvent) => {
+    try {
+      const data = JSON.parse(event.data);
+
+      // Handle heartbeat messages
+      if (data.type === "pong" || data.type === "ping") {
+        // Process heartbeat
+        return;
+      }
+
+      // Process chat messages with metadata
+      if (data.role && data.content) {
+        const message: Message = data as Message;
+        setMessages((prev) => [...prev, message]);
+        setIsTyping(false);
+        setAgentStatus("available");
+      }
+    } catch (error) {
+      console.error("Error parsing WebSocket message:", error);
+      setIsTyping(false);
+      setAgentStatus("error");
+    }
+  };
+};
+```
+
+### **Connection Features**
+
+- **Client Tracking**: Unique client IDs for session management
+- **Health Monitoring**: Real-time connection state tracking
+- **Error Recovery**: Graceful handling of network issues
+- **Message Reliability**: Delivery confirmation and retry logic
+- **Performance Monitoring**: Connection metrics and analytics
 
 ## 🎨 Theme System
 
@@ -173,6 +264,11 @@ The application uses a comprehensive CSS variables system for easy theming:
   --color-text-muted: #94a3b8;
   --color-text-inverse: #0f172a;
 
+  /* Connection Status Colors */
+  --color-connected: #10b981;
+  --color-connecting: #f59e0b;
+  --color-disconnected: #ef4444;
+
   /* Border and Shadow */
   --color-border: #334155;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -187,104 +283,106 @@ The application uses a comprehensive CSS variables system for easy theming:
 }
 ```
 
-### **Theme Toggle Implementation**
+### **Enhanced Theme Toggle Implementation**
 
 ```typescript
-// Theme management with Zustand
+// Theme management with connection status
 interface UIStore {
   theme: "light" | "dark";
+  connectionStatus: "connected" | "connecting" | "disconnected";
   toggleTheme: () => void;
+  setConnectionStatus: (status: string) => void;
 }
 
 const useUIStore = create<UIStore>((set) => ({
   theme: "dark",
+  connectionStatus: "disconnected",
   toggleTheme: () =>
     set((state) => ({
       theme: state.theme === "dark" ? "light" : "dark",
     })),
+  setConnectionStatus: (status) => set({ connectionStatus: status }),
 }));
 ```
 
-## 📊 Analytics Dashboard
+## 📊 Enhanced Analytics
 
-### **Advanced Visualizations**
-
-The analytics dashboard features sophisticated charts built with Recharts:
+### **WebSocket Metrics Dashboard**
 
 ```typescript
-// Gradient-filled area chart example
-<AreaChart data={chatVolumeData}>
-  <defs>
-    <linearGradient id="chatGradient" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
-    </linearGradient>
-  </defs>
-  <Area
-    type="monotone"
-    dataKey="messages"
-    stroke="#3b82f6"
-    fillOpacity={1}
-    fill="url(#chatGradient)"
-  />
-</AreaChart>
-```
-
-### **Metric Cards**
-
-Interactive metric displays with hover effects and trend indicators:
-
-```typescript
-interface MetricCardProps {
-  title: string;
-  value: number;
-  trend: "up" | "down" | "neutral";
-  trendValue: number;
-  icon: React.ComponentType;
-}
-```
-
-## 🔌 WebSocket Integration
-
-### **Real-time Communication**
-
-```typescript
-// WebSocket hook for chat functionality
-const useWebSocket = (url: string) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useEffect(() => {
-    const ws = new WebSocket(url);
-
-    ws.onopen = () => setIsConnected(true);
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      setMessages((prev) => [...prev, message]);
-    };
-    ws.onclose = () => setIsConnected(false);
-
-    setSocket(ws);
-    return () => ws.close();
-  }, [url]);
-
-  const sendMessage = useCallback(
-    (message: Message) => {
-      if (socket && isConnected) {
-        socket.send(JSON.stringify(message));
-      }
+// Analytics hook with WebSocket metrics
+export const useAnalytics = () => {
+  const [metrics, setMetrics] = useState({
+    chatVolume: 0,
+    responseTime: 0,
+    satisfactionScore: 0,
+    intentDistribution: {},
+    websocketMetrics: {
+      activeConnections: 0,
+      messagesThroughput: 0,
+      connectionErrors: 0,
+      averageConnectionDuration: 0,
     },
-    [socket, isConnected]
-  );
+  });
 
-  return { socket, isConnected, messages, sendMessage };
+  // Fetch enhanced analytics including WebSocket data
+  const fetchAnalytics = async () => {
+    const response = await api.get("/analytics/overview");
+    setMetrics(response.data);
+  };
 };
 ```
 
+### **Real-time Connection Monitoring**
+
+```typescript
+// Connection status component
+const ConnectionStatus: React.FC = () => {
+  const { isConnected, connectionError, clientId, reconnectAttempts } = useWebSocket();
+
+  return (
+    <div className="connection-status">
+      <div className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}>
+        {isConnected ? 'Connected' : 'Disconnected'}
+      </div>
+      <div className="client-id">Client: {clientId}</div>
+      {reconnectAttempts > 0 && (
+        <div className="reconnect-info">Reconnect attempts: {reconnectAttempts}</div>
+      )}
+    </div>
+  );
+};
+```
+
+## 🚀 Recent Enhancements
+
+### **WebSocket Reliability Improvements**
+
+- ✅ Fixed critical event handler conflicts between hooks
+- ✅ Implemented robust connection management with client tracking
+- ✅ Added comprehensive error handling and recovery mechanisms
+- ✅ Introduced heartbeat keep-alive with ping/pong
+- ✅ Enhanced reconnection strategies with exponential backoff
+
+### **Chat Experience Enhancements**
+
+- ✅ Improved message handling with proper type detection
+- ✅ Enhanced typing indicators with connection state awareness
+- ✅ Added connection status indicators in the UI
+- ✅ Implemented graceful error recovery that doesn't break chat flow
+- ✅ Added detailed logging and debugging capabilities
+
+### **UI/UX Improvements**
+
+- ✅ Enhanced message bubbles with rich metadata display
+- ✅ Added connection health indicators in the header
+- ✅ Improved error messaging and user feedback
+- ✅ Enhanced analytics dashboard with WebSocket metrics
+- ✅ Better responsive design for connection status elements
+
 ## 🧪 Testing
 
-### **Available Scripts**
+### **Component Testing**
 
 ```bash
 # Run all tests
@@ -294,221 +392,201 @@ yarn test
 
 # Run tests in watch mode
 npm run test:watch
+# or
+yarn test:watch
 
-# Generate coverage report
+# Run tests with coverage
 npm run test:coverage
-
-# Run linting
-npm run lint
-
-# Format code
-npm run format
+# or
+yarn test:coverage
 ```
 
-### **Testing Stack**
-
-- **Vitest**: Fast unit and integration testing
-- **React Testing Library**: Component testing utilities
-- **MSW**: API mocking for integration tests
-- **Playwright**: End-to-end testing (coming soon)
-
-## 🎯 Component Development
-
-### **Component Structure**
-
-Each component follows a consistent structure:
-
-```
-ComponentName/
-├── index.ts              # Export barrel
-├── ComponentName.tsx     # Main component
-├── ComponentName.module.css # Styles
-└── ComponentName.test.tsx # Tests (optional)
-```
-
-### **Example Component**
+### **WebSocket Testing**
 
 ```typescript
-// Button/Button.tsx
-interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-  loading?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
+// Example WebSocket hook test
+import { renderHook, act } from "@testing-library/react";
+import { useWebSocket } from "../hooks/useWebSocket";
+
+test("should connect and handle messages", async () => {
+  const { result } = renderHook(() =>
+    useWebSocket("ws://localhost:8000/api/v1/chat/ws")
+  );
+
+  // Test connection establishment
+  await act(async () => {
+    result.current.connect();
+  });
+
+  expect(result.current.isConnected).toBe(true);
+  expect(result.current.clientId).toBeDefined();
+});
+```
+
+### **Chat Integration Testing**
+
+```typescript
+// Example chat flow test
+test("should send message and receive response", async () => {
+  const { result } = renderHook(() => useChat());
+
+  await act(async () => {
+    result.current.sendMessage("internet is down");
+  });
+
+  expect(result.current.isTyping).toBe(true);
+
+  // Mock WebSocket response
+  await act(async () => {
+    // Simulate response
+  });
+
+  expect(result.current.messages).toHaveLength(2); // User + Assistant
+  expect(result.current.isTyping).toBe(false);
+});
+```
+
+## 🔧 Configuration
+
+### **WebSocket Configuration**
+
+```typescript
+// WebSocket configuration options
+interface WebSocketConfig {
+  autoConnect: boolean;
+  reconnection: boolean;
+  reconnectionAttempts: number;
+  reconnectionDelay: number;
+  heartbeatInterval: number;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  loading = false,
-  children,
-  onClick
-}) => {
-  return (
-    <button
-      className={cn(
-        styles.button,
-        styles[variant],
-        styles[size],
-        { [styles.loading]: loading }
-      )}
-      onClick={onClick}
-      disabled={loading}
-    >
-      {loading ? <Spinner /> : children}
-    </button>
-  );
+const defaultConfig: WebSocketConfig = {
+  autoConnect: true,
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  heartbeatInterval: 30000,
 };
 ```
 
-## 🚀 Performance Optimization
+### **Environment Variables**
 
-### **Code Splitting**
+```env
+# WebSocket Configuration
+VITE_WS_URL=ws://localhost:8000
+VITE_WS_HEARTBEAT_INTERVAL=30000
+VITE_WS_RECONNECT_ATTEMPTS=5
+VITE_WS_RECONNECT_DELAY=1000
 
-```typescript
-// Lazy loading for route components
-const Dashboard = lazy(() => import('./components/analytics/Dashboard'));
-const ChatInterface = lazy(() => import('./components/chat/ChatInterface'));
+# API Configuration
+VITE_API_URL=http://localhost:8000
+VITE_API_TIMEOUT=10000
 
-// Usage with Suspense
-<Suspense fallback={<LoadingSpinner />}>
-  <Dashboard />
-</Suspense>
+# Development
+VITE_ENVIRONMENT=development
+VITE_DEBUG_WEBSOCKET=true
 ```
 
-### **Image Optimization**
+## 📚 Component Documentation
+
+### **Enhanced Chat Components**
+
+#### **ChatInterface**
 
 ```typescript
-// Optimized image component with lazy loading
-const OptimizedImage: React.FC<ImageProps> = ({ src, alt, ...props }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+interface ChatInterfaceProps {
+  className?: string;
+  showConnectionStatus?: boolean;
+  enableTypingIndicators?: boolean;
+}
+
+// Enhanced chat interface with connection monitoring
+const ChatInterface: React.FC<ChatInterfaceProps> = ({
+  showConnectionStatus = true,
+  enableTypingIndicators = true
+}) => {
+  const { messages, isTyping, sendMessage, isConnected, clientId } = useChat();
 
   return (
-    <div className={styles.imageContainer}>
-      {!isLoaded && <Skeleton />}
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        onLoad={() => setIsLoaded(true)}
-        className={cn(styles.image, { [styles.loaded]: isLoaded })}
-        {...props}
-      />
+    <div className="chat-interface">
+      {showConnectionStatus && <ConnectionStatus />}
+      <MessageList messages={messages} />
+      {enableTypingIndicators && isTyping && <TypingIndicator />}
+      <MessageInput onSend={sendMessage} disabled={!isConnected} />
     </div>
   );
 };
 ```
 
-## 🔧 Configuration
-
-### **Vite Configuration**
+#### **Enhanced MessageBubble**
 
 ```typescript
-// vite.config.ts
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@hooks": path.resolve(__dirname, "./src/hooks"),
-      "@services": path.resolve(__dirname, "./src/services"),
-      "@store": path.resolve(__dirname, "./src/store"),
-      "@types": path.resolve(__dirname, "./src/types"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
-    },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          charts: ["recharts"],
-          utils: ["date-fns", "clsx"],
-        },
-      },
-    },
-  },
-});
-```
+interface MessageBubbleProps {
+  message: Message;
+  showMetadata?: boolean;
+  showAgentInfo?: boolean;
+}
 
-### **Tailwind Configuration**
-
-```javascript
-// tailwind.config.js
-module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: ["class", '[data-theme="dark"]'],
-  theme: {
-    extend: {
-      colors: {
-        primary: "var(--color-primary)",
-        background: "var(--color-background)",
-        surface: "var(--color-surface)",
-        text: "var(--color-text)",
-      },
-      animation: {
-        "fade-in": "fadeIn 0.5s ease-in-out",
-        "slide-up": "slideUp 0.3s ease-out",
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-      },
-    },
-  },
+// Rich message display with agent information
+const MessageBubble: React.FC<MessageBubbleProps> = ({
+  message,
+  showMetadata = true,
+  showAgentInfo = true
+}) => {
+  return (
+    <div className={`message-bubble ${message.role}`}>
+      <div className="message-content">{message.content}</div>
+      {showAgentInfo && message.agent && (
+        <div className="agent-info">
+          <span className="agent-name">{message.agent}</span>
+          <span className="agent-type">{message.agent_type}</span>
+        </div>
+      )}
+      {showMetadata && (
+        <div className="message-metadata">
+          <span className="timestamp">{formatTime(message.timestamp)}</span>
+          {message.intent_data?.confidence && (
+            <span className="confidence">
+              Confidence: {(message.intent_data.confidence * 100).toFixed(1)}%
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 ```
 
-## 🌐 Deployment
+## 🎯 Performance Optimization
 
-### **Build Optimization**
+### **WebSocket Optimization**
 
-```bash
-# Production build with optimization
-npm run build
+- **Connection Pooling**: Reuse connections across components
+- **Message Batching**: Batch multiple messages for efficiency
+- **Memory Management**: Proper cleanup of event listeners
+- **Error Boundaries**: React error boundaries for WebSocket errors
 
-# Analyze bundle size
-npm run build -- --analyze
+### **Rendering Optimization**
 
-# Build with environment variables
-VITE_API_URL=https://api.production.com npm run build
-```
-
-### **Docker Deployment**
-
-```dockerfile
-# Multi-stage build for optimized production image
-FROM node:18-alpine as builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
+- **React.memo**: Memoized components for expensive renders
+- **useMemo/useCallback**: Optimized hooks for complex computations
+- **Virtual Scrolling**: Efficient rendering of large message lists
+- **Code Splitting**: Lazy loading of route components
 
 ## 🤝 Contributing
 
-### **Development Workflow**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/websocket-enhancement`)
+3. Make your changes with tests
+4. Run the test suite (`npm test`)
+5. Commit your changes (`git commit -m 'Add WebSocket enhancement'`)
+6. Push to the branch (`git push origin feature/websocket-enhancement`)
+7. Open a Pull Request
 
-1. Create feature branch: `git checkout -b feature/new-feature`
-2. Make changes and add tests
-3. Run quality checks: `npm run lint && npm test`
-4. Commit with conventional format: `feat: add new component`
-5. Push and create pull request
+## 📄 License
 
-### **Code Standards**
-
-- **TypeScript**: Strict mode enabled, full type coverage
-- **ESLint**: Enforced code quality and consistency
-- **Prettier**: Automated code formatting
-- **Conventional Commits**: Standardized commit messages
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ---
 
-For more detailed information, see the [main documentation](../docs/README.md) and explore the component library in `src/components/`.
+**Built with React, TypeScript, Tailwind CSS, and enterprise-grade WebSocket reliability.**

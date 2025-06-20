@@ -1,36 +1,49 @@
 # Xfinity Agentic AI Backend
 
-This backend powers an agentic AI customer support demo for an Xfinity-style telecom/ISP company. It features enhanced multi-agent routing, intelligent knowledge base matching with natural language processing, comprehensive analytics, MLOps integration, and enterprise-grade monitoring with Prometheus and Grafana.
+This backend powers an agentic AI customer support demo for an Xfinity-style telecom/ISP company. It features **enterprise-grade WebSocket connection management**, enhanced multi-agent routing, intelligent knowledge base matching with natural language processing, comprehensive analytics, MLOps integration, and enterprise-grade monitoring with Prometheus and Grafana.
 
 ## 🚀 Features
+
+### **🔌 Enterprise-Grade WebSocket Architecture**
+
+- **Robust Connection Manager**: Client tracking with unique IDs and metadata
+- **Automatic Reconnection**: Exponential backoff strategy for connection resilience
+- **Heartbeat Keep-Alive**: Ping/pong mechanism prevents connection timeouts
+- **Comprehensive Error Handling**: Graceful fallbacks that never break chat flow
+- **Real-time Monitoring**: Connection statistics and health tracking
 
 ### **🤖 Intelligent AI System**
 
 - **Multi-Agent Architecture**: Specialized agents (Tech Support, Billing, General) with intent-based routing
-- **Enhanced Knowledge Base**: Natural language matching with normalized keyword processing
+- **Enhanced Natural Language Understanding**: Advanced intent classification with confidence scoring
+- **Local Intent Service**: Fast, reliable intent classification with cloud fallback
+- **Smart Knowledge Base**: Semantic search with normalized keyword processing
 - **Smart Fallback**: OpenAI GPT integration for complex queries beyond knowledge base
-- **Intent Classification**: Automatic routing based on user query analysis
 
 ### **📊 Analytics & Monitoring**
 
 - **Real-time Metrics**: Chat volume, response times, satisfaction scores, intent distribution
+- **WebSocket Metrics**: Connection count, message throughput, error rates
 - **Prometheus Integration**: Production-ready metrics at `/metrics` endpoint
 - **Database Monitoring**: PostgreSQL health, connection pools, query performance
-- **WebSocket Tracking**: Real-time connection monitoring and performance
+- **Connection Health Tracking**: Real-time WebSocket connection monitoring and performance
 
 ### **🔬 MLOps & Data Science**
 
+- **Enhanced Intent Classification**: Advanced pattern matching and confidence scoring
 - **Experiment Tracking**: MLflow integration for model versioning
 - **Semantic Search**: Vector embeddings with sentence transformers
+- **Conversation Analytics**: WebSocket message flow analysis
 - **Data Pipeline**: ETL processes for feedback and intent training
 - **Model Deployment**: Containerized ML models with FastAPI
 
 ### **🛠️ Production Ready**
 
-- **WebSocket & REST APIs**: Real-time and traditional endpoints
+- **Enhanced WebSocket & REST APIs**: Real-time and traditional endpoints with robust error handling
 - **Async Operations**: High-performance async/await patterns
+- **Connection Management**: Enterprise-grade WebSocket client tracking and lifecycle management
 - **Security**: JWT authentication, input validation, rate limiting
-- **Error Handling**: Comprehensive error responses and logging
+- **Comprehensive Error Handling**: Graceful error responses and detailed logging
 
 ## 🏗️ Setup
 
@@ -57,6 +70,12 @@ Create a `.env` file in the `backend/` directory:
 OPENAI_API_KEY=your-openai-key-here
 DATABASE_URL=postgresql://user:password@localhost:5432/xfinity_ai
 REDIS_URL=redis://localhost:6379
+
+# WebSocket Configuration
+WEBSOCKET_HEARTBEAT_INTERVAL=30000
+WEBSOCKET_RECONNECT_ATTEMPTS=5
+WEBSOCKET_RECONNECT_DELAY=1000
+WEBSOCKET_MAX_CONNECTIONS=1000
 
 # Security
 JWT_SECRET_KEY=your-jwt-secret-key
@@ -111,24 +130,26 @@ docker run -p 8000:8000 --env-file .env xfinity-agent-backend
 
 ## 📡 API Endpoints
 
-### **Chat & Conversations**
+### **Enhanced Chat & WebSocket**
 
 - `POST /api/v1/chat/messages` — Send message, get AI response with agent routing
 - `GET /api/v1/chat/conversations` — List user conversations with pagination
 - `GET /api/v1/chat/conversations/{id}` — Get specific conversation details
-- `WS /api/v1/chat/ws` — Real-time WebSocket chat interface
+- `WS /api/v1/chat/ws/{client_id}` — Enhanced WebSocket chat with client tracking
+- `WS /api/v1/chat/ws` — Legacy WebSocket endpoint (auto-assigns client ID)
+- `GET /api/v1/chat/ws/stats` — WebSocket connection statistics and health
 
 ### **Knowledge Base**
 
-- `GET /api/v1/knowledge/search` — Search knowledge base with query
+- `GET /api/v1/knowledge/search` — Enhanced semantic search with confidence scoring
 - `GET /api/v1/knowledge/categories` — List all categories by agent
 - `POST /api/v1/knowledge/feedback` — Submit knowledge base feedback
 
 ### **Analytics & Insights**
 
-- `GET /api/v1/analytics/overview` — Comprehensive analytics summary
+- `GET /api/v1/analytics/overview` — Comprehensive analytics summary with WebSocket metrics
 - `GET /api/v1/analytics/metrics` — Detailed metrics with time ranges
-- `GET /api/v1/analytics/intents` — Intent distribution and trends
+- `GET /api/v1/analytics/intents` — Intent distribution and confidence trends
 - `GET /api/v1/analytics/satisfaction` — User satisfaction scores
 
 ### **Feedback & Quality**
@@ -139,22 +160,82 @@ docker run -p 8000:8000 --env-file .env xfinity-agent-backend
 
 ### **System & Health**
 
-- `GET /api/v1/health` — System health check with dependencies
+- `GET /api/v1/health` — System health check with WebSocket connection status
 - `GET /api/v1/profile` — User profile management
-- `GET /metrics` — Prometheus metrics endpoint
+- `GET /metrics` — Prometheus metrics endpoint with WebSocket metrics
+
+## 🔌 WebSocket Architecture
+
+### **Connection Manager**
+
+```python
+class ChatConnectionManager:
+    """
+    Robust WebSocket connection manager for multi-client chat support.
+
+    Features:
+    - Client identification and tracking
+    - Connection state management
+    - Error handling for failed connections
+    - Graceful disconnection handling
+    - Message queuing for offline clients
+    """
+
+    def __init__(self):
+        self.active_connections: Dict[str, WebSocket] = {}
+        self.connection_metadata: Dict[str, Dict[str, Any]] = {}
+
+    async def connect(self, websocket: WebSocket, client_id: str):
+        """Accept connection and register client"""
+
+    async def disconnect(self, client_id: str):
+        """Remove client and cleanup metadata"""
+
+    async def send_personal_message(self, message: Dict[str, Any], client_id: str):
+        """Send message to specific client with error handling"""
+```
+
+### **Enhanced WebSocket Endpoint**
+
+```python
+@router.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    """
+    Enhanced WebSocket endpoint with:
+    - Proper connection management
+    - Comprehensive exception handling
+    - Client identification
+    - Detailed logging
+    - Graceful error recovery
+    """
+```
+
+### **Connection Features**
+
+- **Client Tracking**: Unique client IDs with metadata
+- **Health Monitoring**: Connection state and activity tracking
+- **Error Recovery**: Graceful handling of network issues
+- **Message Reliability**: Delivery confirmation and retry logic
+- **Performance Monitoring**: Connection metrics and analytics
 
 ## 📊 Monitoring & Observability
 
-### **Prometheus Metrics**
+### **Enhanced Prometheus Metrics**
 
 The backend exposes comprehensive metrics at `/metrics`:
 
 ```python
-# Custom metrics examples
-http_requests_total = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
-chat_response_time = Histogram('chat_response_time_seconds', 'Chat response time')
-knowledge_base_hits = Counter('knowledge_base_hits_total', 'KB search hits')
-llm_fallback_requests = Counter('llm_fallback_requests_total', 'LLM fallback requests')
+# WebSocket-specific metrics
+websocket_connections_total = Gauge('websocket_connections_total', 'Active WebSocket connections')
+websocket_messages_total = Counter('websocket_messages_total', 'Total WebSocket messages', ['direction'])
+websocket_connection_duration = Histogram('websocket_connection_duration_seconds', 'Connection duration')
+websocket_errors_total = Counter('websocket_errors_total', 'WebSocket errors', ['error_type'])
+
+# Enhanced chat metrics
+chat_response_time = Histogram('chat_response_time_seconds', 'Chat response time', ['agent_type'])
+intent_classification_confidence = Histogram('intent_classification_confidence', 'Intent confidence scores')
+knowledge_base_hits = Counter('knowledge_base_hits_total', 'KB search hits', ['agent', 'confidence_level'])
+llm_fallback_requests = Counter('llm_fallback_requests_total', 'LLM fallback requests', ['reason'])
 ```
 
 ### **Structured Logging**
@@ -163,285 +244,250 @@ llm_fallback_requests = Counter('llm_fallback_requests_total', 'LLM fallback req
 import structlog
 
 logger = structlog.get_logger()
+
+# WebSocket connection logging
+logger.info("WebSocket connection established",
+    client_id=client_id,
+    connection_count=connection_manager.get_connection_count()
+)
+
+# Enhanced chat logging
 logger.info("Chat message processed",
     user_id=user_id,
+    client_id=client_id,
     intent=detected_intent,
+    confidence=intent_confidence,
     agent=selected_agent,
-    response_time=elapsed_time
+    response_time=elapsed_time,
+    knowledge_base_hit=kb_hit
 )
 ```
 
 ### **Health Checks**
 
 ```bash
-# Basic health
+# Basic health with WebSocket status
 curl http://localhost:8000/api/v1/health
 
-# Detailed health with dependencies
-curl http://localhost:8000/api/v1/health?detailed=true
+# WebSocket connection statistics
+curl http://localhost:8000/api/v1/chat/ws/stats
 ```
 
-## 🧠 Enhanced Knowledge Base
+## 🧠 Enhanced Natural Language Understanding
 
-### **Natural Language Matching**
-
-The system now includes sophisticated matching algorithms:
+### **Advanced Intent Classification**
 
 ```python
-def normalize(text: str) -> str:
-    """Normalize text for better matching"""
-    return re.sub(r'[^\w\s]', ' ', text.lower()).strip()
+class LocalIntentService:
+    """
+    Local intent classification service with enhanced pattern matching.
 
-def search_agent_kb(query: str, agent_data: dict) -> Optional[dict]:
-    """Enhanced search with category name and keyword matching"""
-    normalized_query = normalize(query)
-    query_words = set(normalized_query.split())
+    Features:
+    - Multi-pattern matching with confidence scoring
+    - Keyword normalization and preprocessing
+    - Fallback to cloud services
+    - Performance optimization
+    """
 
-    # Multi-level matching strategy
-    for category_name, category_data in agent_data.get("categories", {}).items():
-        # 1. Category name matching
-        if normalized_query in normalize(category_name):
-            return category_data
+    def classify_intent(self, query: str) -> Dict[str, Any]:
+        """
+        Classify intent with confidence scoring.
 
-        # 2. Keyword overlap matching
-        category_keywords = set(normalize(" ".join(category_data.get("keywords", []))).split())
-        if len(query_words.intersection(category_keywords)) >= 2:
-            return category_data
-
-    return None
+        Returns:
+        - intent: Classified category
+        - confidence: Confidence score (0-1)
+        - matched_patterns: Patterns that matched
+        - agent_type: Recommended agent
+        """
 ```
 
-### **Knowledge Base Structure**
-
-```json
-{
-  "agents": {
-    "tech_support": {
-      "categories": {
-        "connectivity_issues": {
-          "keywords": [
-            "internet",
-            "wifi",
-            "connection",
-            "outage",
-            "down",
-            "slow"
-          ],
-          "response": "I can help you troubleshoot connectivity issues...",
-          "confidence": 0.95
-        }
-      }
-    }
-  }
-}
-```
-
-## 🏗️ Directory Structure
-
-```
-backend/
-├── src/
-│   ├── api/                    # FastAPI route handlers
-│   │   ├── chat.py            # Chat and conversation endpoints
-│   │   ├── analytics.py       # Analytics and metrics endpoints
-│   │   ├── feedback.py        # Feedback collection endpoints
-│   │   └── knowledge.py       # Knowledge base endpoints
-│   ├── services/              # Core business logic
-│   │   ├── chat_service.py    # Enhanced chat processing
-│   │   ├── intent_service.py  # Intent classification
-│   │   ├── analytics_service.py # Analytics computation
-│   │   └── semantic_search.py # Vector search capabilities
-│   ├── models/                # Pydantic models and schemas
-│   │   ├── chat_models.py     # Chat-related data models
-│   │   ├── analytics_models.py # Analytics schemas
-│   │   └── feedback_models.py # Feedback data structures
-│   ├── config/                # Configuration management
-│   │   ├── database.py        # Database connection and ORM
-│   │   └── __init__.py        # Config initialization
-│   ├── migrations/            # Alembic database migrations
-│   ├── xfinity_knowledge_base.json # Enhanced knowledge base
-│   └── main.py               # FastAPI application entry point
-├── tests/                     # Comprehensive test suite
-│   ├── test_api_chat.py      # Chat API tests
-│   ├── test_api_analytics.py # Analytics API tests
-│   └── test_api_feedback.py  # Feedback API tests
-├── requirements.txt          # Python dependencies
-├── setup.py                  # Package configuration
-└── Dockerfile               # Container configuration
-```
-
-## 🔧 How It Works
-
-### **Message Processing Flow**
-
-1. **Message Received** → WebSocket or REST endpoint
-2. **Intent Classification** → Determine user intent (tech, billing, general)
-3. **Agent Selection** → Route to appropriate specialized agent
-4. **Knowledge Base Search** → Enhanced matching with normalization
-5. **LLM Fallback** → OpenAI GPT for complex queries
-6. **Response Generation** → Include agent info, source, confidence
-7. **Analytics Tracking** → Log metrics for monitoring
-8. **Response Delivery** → Real-time or synchronous response
-
-### **Knowledge Base Matching Strategy**
+### **Enhanced Knowledge Base Search**
 
 ```python
-# 1. Exact category name matching
-# 2. Normalized keyword overlap (≥2 words)
-# 3. Substring matching with confidence scoring
-# 4. Semantic similarity (when enabled)
-# 5. LLM fallback for unmatched queries
+def enhanced_semantic_search(query: str, agent_type: str = None) -> List[Dict]:
+    """
+    Enhanced semantic search with:
+    - Query preprocessing and normalization
+    - Multi-level matching (exact, partial, semantic)
+    - Confidence scoring
+    - Agent-specific filtering
+    - Result ranking and deduplication
+    """
+
+    # Query preprocessing
+    normalized_query = preprocess_query(query)
+
+    # Multi-level search strategy
+    exact_matches = find_exact_matches(normalized_query)
+    partial_matches = find_partial_matches(normalized_query)
+    semantic_matches = find_semantic_matches(normalized_query)
+
+    # Combine and rank results
+    return rank_and_deduplicate_results(exact_matches, partial_matches, semantic_matches)
 ```
 
-### **Multi-Agent Architecture**
+### **Pattern Matching Algorithms**
 
-- **Tech Support Agent**: Hardware, connectivity, troubleshooting
-- **Billing Agent**: Payments, plans, account management
-- **General Agent**: Company info, policies, general inquiries
-- **Coordinator**: Intent classification and routing logic
+```python
+# Enhanced pattern matching with confidence scoring
+BILLING_PATTERNS = [
+    {"pattern": r"\b(bill|billing|charge|cost|expensive|payment)\b", "weight": 0.9},
+    {"pattern": r"\b(cancel|disconnect|service)\b", "weight": 0.7},
+    {"pattern": r"\b(refund|credit|discount)\b", "weight": 0.8}
+]
+
+TECHNICAL_PATTERNS = [
+    {"pattern": r"\b(internet|wifi|connection|slow|down|outage)\b", "weight": 0.9},
+    {"pattern": r"\b(router|modem|equipment|device)\b", "weight": 0.8},
+    {"pattern": r"\b(speed|performance|lag|buffering)\b", "weight": 0.7}
+]
+```
+
+## 🚀 Recent Enhancements
+
+### **WebSocket Reliability Improvements**
+
+- ✅ Implemented robust connection manager with client tracking
+- ✅ Added comprehensive error handling and recovery mechanisms
+- ✅ Introduced heartbeat keep-alive with ping/pong
+- ✅ Enhanced reconnection strategies with exponential backoff
+- ✅ Added detailed logging and connection monitoring
+
+### **Natural Language Understanding**
+
+- ✅ Advanced intent classification with confidence scoring
+- ✅ Local intent service with cloud fallback capabilities
+- ✅ Enhanced semantic search with multi-level matching
+- ✅ Improved pattern matching algorithms
+- ✅ Query preprocessing and normalization
+
+### **Production Readiness**
+
+- ✅ Enterprise-grade WebSocket architecture
+- ✅ Comprehensive metrics and monitoring
+- ✅ Graceful error handling and recovery
+- ✅ Connection health tracking and analytics
+- ✅ Performance optimization and scaling considerations
 
 ## 🧪 Testing
 
-### **Run Tests**
+### **Backend Tests**
 
 ```bash
-# All tests
+cd backend
 pytest tests/ -v
 
-# Specific test categories
-pytest tests/test_api_chat.py -v
-pytest tests/test_api_analytics.py -v
+# Run WebSocket-specific tests
+pytest tests/test_websocket.py -v
 
-# With coverage
-pytest tests/ --cov=src --cov-report=html
+# Run intent classification tests
+pytest tests/test_intent_service.py -v
 ```
 
-### **Test Categories**
+### **WebSocket Testing**
 
-- **Unit Tests**: Individual service and utility functions
-- **Integration Tests**: API endpoints with database
-- **Performance Tests**: Load testing for chat endpoints
-- **ML Tests**: Knowledge base matching accuracy
+```python
+# Example WebSocket test
+async def test_websocket_connection():
+    async with websockets.connect("ws://localhost:8000/api/v1/chat/ws/test-client") as websocket:
+        # Test message sending
+        await websocket.send(json.dumps({"content": "internet is down"}))
 
-## 🚀 Extending
+        # Test response receiving
+        response = await websocket.recv()
+        data = json.loads(response)
 
-### **Add New Agents**
+        assert data["role"] == "assistant"
+        assert "internet" in data["content"].lower()
+```
 
-1. Update `xfinity_knowledge_base.json`:
+### **Intent Classification Testing**
 
-```json
-{
-  "agents": {
-    "new_agent": {
-      "categories": {
-        "new_category": {
-          "keywords": ["keyword1", "keyword2"],
-          "response": "Agent response template",
-          "confidence": 0.9
-        }
-      }
-    }
-  }
+```python
+# Test enhanced intent classification
+def test_intent_classification():
+    intent_service = LocalIntentService()
+
+    result = intent_service.classify_intent("my bill is so expensive")
+
+    assert result["intent"] == "billing"
+    assert result["confidence"] > 0.8
+    assert result["agent_type"] == "billing"
+```
+
+## 🔧 Configuration
+
+### **WebSocket Configuration**
+
+```python
+# WebSocket settings
+WEBSOCKET_CONFIG = {
+    "heartbeat_interval": 30,  # seconds
+    "max_connections": 1000,
+    "connection_timeout": 300,  # seconds
+    "message_queue_size": 100,
+    "reconnect_attempts": 5,
+    "reconnect_delay": 1000  # milliseconds
 }
 ```
 
-2. Update intent classification in `intent_service.py`
-3. Add routing logic in `chat_service.py`
-
-### **Add New Analytics**
-
-Extend `analytics_service.py` with new metrics:
+### **Intent Classification Configuration**
 
 ```python
-@track_metric("custom_metric")
-async def compute_custom_metric():
-    # Your metric computation
-    return metric_value
+# Intent service settings
+INTENT_CONFIG = {
+    "confidence_threshold": 0.7,
+    "use_local_service": True,
+    "fallback_to_cloud": True,
+    "cache_results": True,
+    "cache_ttl": 3600  # seconds
+}
 ```
 
-### **Add New Endpoints**
+## 📚 API Documentation
 
-Create new API routes in `api/` directory:
+### **Interactive Documentation**
 
-```python
-from fastapi import APIRouter
-from services.custom_service import CustomService
+- **Swagger UI**: http://localhost:8000/docs (Interactive API exploration)
+- **ReDoc**: http://localhost:8000/redoc (Clean API documentation)
 
-router = APIRouter()
-
-@router.post("/custom")
-async def custom_endpoint():
-    return await CustomService.process()
-```
-
-## 📈 Performance Optimization
-
-### **Database Optimization**
-
-- Connection pooling with SQLAlchemy
-- Query optimization with proper indexing
-- Async database operations
-
-### **Caching Strategy**
-
-- Redis for session storage
-- In-memory caching for knowledge base
-- Response caching for analytics
-
-### **Monitoring & Alerts**
-
-- Response time monitoring
-- Error rate tracking
-- Resource utilization alerts
-- Custom business metrics
-
-## 🔐 Security
-
-### **Authentication & Authorization**
-
-- JWT token-based authentication
-- Role-based access control
-- API rate limiting
-
-### **Data Protection**
-
-- Input validation and sanitization
-- SQL injection prevention
-- CORS configuration
-- Sensitive data encryption
-
-## 📚 Example Usage
-
-### **Send Chat Message**
-
-```bash
-curl -X POST http://localhost:8000/api/v1/chat/messages \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "id": "msg-123",
-    "content": "My internet is not working",
-    "role": "user",
-    "timestamp": "2024-01-15T10:30:00Z"
-  }'
-```
-
-### **Get Analytics**
-
-```bash
-curl http://localhost:8000/api/v1/analytics/overview
-```
-
-### **WebSocket Connection**
+### **WebSocket API**
 
 ```javascript
-const ws = new WebSocket("ws://localhost:8000/api/v1/chat/ws");
+// Connect to WebSocket
+const ws = new WebSocket("ws://localhost:8000/api/v1/chat/ws/your-client-id");
+
+// Send message
+ws.send(
+  JSON.stringify({
+    content: "My internet is not working",
+  })
+);
+
+// Handle response
 ws.onmessage = (event) => {
   const response = JSON.parse(event.data);
+  console.log("AI Response:", response.content);
   console.log("Agent:", response.agent);
-  console.log("Response:", response.content);
+  console.log("Intent:", response.intent);
+  console.log("Confidence:", response.intent_data?.confidence);
 };
 ```
 
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/websocket-enhancement`)
+3. Make your changes with tests
+4. Run the test suite (`pytest tests/ -v`)
+5. Commit your changes (`git commit -m 'Add WebSocket enhancement'`)
+6. Push to the branch (`git push origin feature/websocket-enhancement`)
+7. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+
 ---
 
-For more details, see the documentation in the `docs/` directory and explore the code in `src/`.
+**Built with FastAPI, LangChain, WebSockets, and enterprise-grade reliability patterns.**

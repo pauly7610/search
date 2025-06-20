@@ -262,7 +262,7 @@ MLFLOW_TRACKING_URI=http://localhost:5000
 const websocketOptions = {
   autoConnect: true,
   reconnection: true,
-  reconnectionAttempts: 5,
+  reconnectionAttempts: 3,
   reconnectionDelay: 1000,
   heartbeatInterval: 30000,
 };

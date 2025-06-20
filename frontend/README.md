@@ -180,7 +180,7 @@ export const useWebSocket = (
   const {
     autoConnect = true,
     reconnection = true,
-    reconnectionAttempts = 5,
+    reconnectionAttempts = 3,
     reconnectionDelay = 1000,
     heartbeatInterval = 30000,
   } = options;
@@ -463,7 +463,7 @@ interface WebSocketConfig {
 const defaultConfig: WebSocketConfig = {
   autoConnect: true,
   reconnection: true,
-  reconnectionAttempts: 5,
+  reconnectionAttempts: 3,
   reconnectionDelay: 1000,
   heartbeatInterval: 30000,
 };

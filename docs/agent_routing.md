@@ -259,7 +259,7 @@ class ConfidenceThresholdManager:
         elif current_accuracy < 0.85 and current_threshold < 0.9:
             # Low accuracy - raise threshold
             new_threshold = min(0.9, current_threshold + 0.05)
-        else:
+else:
             new_threshold = current_threshold
 
         self.base_thresholds[agent_type] = new_threshold

@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
     # - Set up Redis connections for caching
     # - Initialize background task queues
     
-    yield  # Application runs here
+    yield # Application runs here
     
     # Shutdown phase - cleanup resources
     logger.info("Shutting down application...")
@@ -96,12 +96,12 @@ app.mount("/metrics", make_asgi_app())
 # are served from different domains or ports during development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Configure this properly for production
+    allow_origins=["*"], # TODO: Configure this properly for production
     # Production security note: Replace ["*"] with specific allowed origins
     # Example: ["https://yourdomain.com", "https://app.yourdomain.com"]
-    allow_credentials=True,  # Allow cookies and authentication headers
-    allow_methods=["*"],     # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
-    allow_headers=["*"],     # Allow all headers including custom ones
+    allow_credentials=True, # Allow cookies and authentication headers
+    allow_methods=["*"], # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"], # Allow all headers including custom ones
 )
 
 # Register API routers with versioned prefixes and tags
@@ -163,4 +163,4 @@ if __name__ == "__main__":
     # Development server configuration
     # In production, this would typically be replaced with a production
     # WSGI server like Gunicorn or Uvicorn in a container/deployment setup
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

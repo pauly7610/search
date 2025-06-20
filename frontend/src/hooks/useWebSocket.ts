@@ -24,8 +24,9 @@ export const useWebSocket = (
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
   const reconnectAttemptsRef = useRef(0);
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatIntervalRef = useRef<number | null>(null);
   const clientIdRef = useRef<string>(generateClientId());
+  const lastPongRef = useRef<Date>(new Date());
 
   // Generate unique client ID
   function generateClientId(): string {
@@ -43,6 +44,17 @@ export const useWebSocket = (
         try {
           socketRef.current.send(JSON.stringify({ type: 'ping' }));
           console.log('Heartbeat ping sent');
+          
+          // Check if we've received a pong recently
+          const now = new Date();
+          const timeSinceLastPong = now.getTime() - lastPongRef.current.getTime();
+          
+          // If no pong received for 2x the heartbeat interval, consider connection dead
+          if (timeSinceLastPong > heartbeatInterval * 2) {
+            console.warn(`No heartbeat response for ${timeSinceLastPong}ms, reconnecting...`);
+            // Force close and reconnect
+            socketRef.current.close(1000, 'Heartbeat timeout');
+          }
         } catch (error) {
           console.error('Failed to send heartbeat ping:', error);
         }
@@ -71,16 +83,31 @@ export const useWebSocket = (
       return;
     }
 
-    console.log(`Attempting to connect to WebSocket: ${url}`);
+    // Close any existing socket that might be in CLOSING state
+    if (socketRef.current) {
+      try {
+        socketRef.current.close();
+      } catch (e) {
+        console.error('Error closing existing socket:', e);
+      }
+    }
+
+    // Determine if we should use a client ID in the URL
+    const fullUrl = clientIdRef.current ? 
+      `${url}/${clientIdRef.current}` : 
+      url;
+      
+    console.log(`Attempting to connect to WebSocket: ${fullUrl}`);
     
     try {
-      const socket = new WebSocket(url);
+      const socket = new WebSocket(fullUrl);
 
       socket.onopen = () => {
         console.log('WebSocket connection opened');
         setIsConnected(true);
         setConnectionError(null);
         reconnectAttemptsRef.current = 0;
+        lastPongRef.current = new Date(); // Reset last pong time
         startHeartbeat();
       };
 
@@ -108,6 +135,9 @@ export const useWebSocket = (
         console.error('WebSocket error:', error);
         setConnectionError('WebSocket connection error occurred');
       };
+      
+      // Don't set onmessage here - let useChat handle all messages
+      // socket.onmessage will be set by useChat
 
       socketRef.current = socket;
 

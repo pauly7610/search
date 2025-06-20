@@ -30,7 +30,21 @@ export const useChat = () => {
           return;
         }
         
+        // Handle pong messages (update heartbeat tracking)
+        if (data.type === 'pong') {
+          console.log('Heartbeat pong received in useChat');
+          return;
+        }
+        
         // Handle chat messages
+        console.log('Checking message structure:', {
+          hasRole: !!data.role,
+          hasContent: !!data.content,
+          role: data.role,
+          content: data.content ? data.content.substring(0, 50) + '...' : 'NO CONTENT',
+          fullMessage: data
+        });
+        
         if (data.role && data.content) {
           const message: Message = data as Message;
           console.log('Processing chat message:', message);
@@ -38,7 +52,7 @@ export const useChat = () => {
           setIsTyping(false);
           setAgentStatus("available");
         } else {
-          console.log('Received non-chat message:', data);
+          console.log('Received non-chat message (missing role or content):', data);
         }
         
       } catch (error) {
@@ -135,7 +149,7 @@ export const useChat = () => {
           content: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
           role: "assistant",
           timestamp: new Date().toISOString(),
-          status: "error",
+          status: "failed",
         };
         setMessages((prev) => [...prev, errorMessage]);
       }

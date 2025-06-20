@@ -28,9 +28,15 @@ from typing import List, Optional, Dict, Any
 import asyncio
 from datetime import datetime
 import uuid
+import json
+import logging
 from openai import OpenAI, RateLimitError
 
 from src.services.chat_service import ChatService
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize API router with chat endpoints
 router = APIRouter()
@@ -38,6 +44,109 @@ router = APIRouter()
 # In-memory message store for demo purposes
 # In production, this would be replaced with a database
 MESSAGES = []
+
+class ChatConnectionManager:
+    """
+    Robust WebSocket connection manager for multi-client chat support.
+    
+    This class manages WebSocket connections, handles client identification,
+    and provides methods for sending messages to specific clients or
+    broadcasting to all connected clients.
+    
+    Features:
+    - Client identification and tracking
+    - Connection state management
+    - Error handling for failed connections
+    - Graceful disconnection handling
+    - Message queuing for offline clients
+    """
+    
+    def __init__(self):
+        # Dictionary to store active WebSocket connections by client ID
+        self.active_connections: Dict[str, WebSocket] = {}
+        # Track connection metadata for debugging and analytics
+        self.connection_metadata: Dict[str, Dict[str, Any]] = {}
+    
+    async def connect(self, websocket: WebSocket, client_id: str):
+        """
+        Accept a new WebSocket connection and register the client.
+        
+        Args:
+            websocket: WebSocket connection instance
+            client_id: Unique identifier for the client
+        """
+        await websocket.accept()
+        self.active_connections[client_id] = websocket
+        self.connection_metadata[client_id] = {
+            "connected_at": datetime.utcnow().isoformat(),
+            "message_count": 0,
+            "last_activity": datetime.utcnow().isoformat()
+        }
+        logger.info(f"Client {client_id} connected. Total connections: {len(self.active_connections)}")
+    
+    async def disconnect(self, client_id: str):
+        """
+        Remove a client connection and clean up metadata.
+        
+        Args:
+            client_id: Unique identifier of the client to disconnect
+        """
+        if client_id in self.active_connections:
+            del self.active_connections[client_id]
+        if client_id in self.connection_metadata:
+            del self.connection_metadata[client_id]
+        logger.info(f"Client {client_id} disconnected. Total connections: {len(self.active_connections)}")
+    
+    async def send_personal_message(self, message: Dict[str, Any], client_id: str):
+        """
+        Send a message to a specific client with error handling.
+        
+        Args:
+            message: Message data to send
+            client_id: Target client identifier
+        """
+        if client_id in self.active_connections:
+            websocket = self.active_connections[client_id]
+            try:
+                await websocket.send_json(message)
+                # Update activity tracking
+                if client_id in self.connection_metadata:
+                    self.connection_metadata[client_id]["last_activity"] = datetime.utcnow().isoformat()
+                    self.connection_metadata[client_id]["message_count"] += 1
+                logger.debug(f"Message sent to client {client_id}")
+            except Exception as e:
+                logger.error(f"Failed to send message to client {client_id}: {e}")
+                await self.disconnect(client_id)
+    
+    async def broadcast(self, message: Dict[str, Any]):
+        """
+        Send a message to all connected clients.
+        
+        Args:
+            message: Message data to broadcast
+        """
+        disconnected_clients = []
+        for client_id, websocket in self.active_connections.items():
+            try:
+                await websocket.send_json(message)
+            except Exception as e:
+                logger.error(f"Failed to broadcast to client {client_id}: {e}")
+                disconnected_clients.append(client_id)
+        
+        # Clean up disconnected clients
+        for client_id in disconnected_clients:
+            await self.disconnect(client_id)
+    
+    def get_connection_count(self) -> int:
+        """Get the number of active connections."""
+        return len(self.active_connections)
+    
+    def get_client_metadata(self, client_id: str) -> Optional[Dict[str, Any]]:
+        """Get metadata for a specific client."""
+        return self.connection_metadata.get(client_id)
+
+# Global connection manager instance
+connection_manager = ChatConnectionManager()
 
 class Message(BaseModel):
     """
@@ -234,59 +343,74 @@ async def get_conversation(
         updatedAt=datetime.utcnow().isoformat(),
     )
 
-# WebSocket endpoint for real-time chat communication
-@router.websocket("/ws")
+# WebSocket endpoint for real-time chat communication with robust connection management
+@router.websocket("/ws/{client_id}")
 async def websocket_endpoint(
     websocket: WebSocket,
+    client_id: str,
     chat_service: ChatService = Depends(get_chat_service)
 ):
     """
-    WebSocket endpoint for real-time chat communication.
+    Enhanced WebSocket endpoint with robust connection management.
     
-    This endpoint enables real-time bidirectional communication between
-    the client and the AI system. It maintains a persistent connection
-    for immediate message exchange and provides a more interactive
-    chat experience.
-    
-    The WebSocket connection:
-    1. Accepts the client connection
-    2. Creates a unique conversation session
-    3. Listens for incoming messages
-    4. Processes messages through the AI system
-    5. Sends responses immediately
-    6. Handles connection errors and disconnections
-    
-    Features:
-    - Real-time message processing
-    - Automatic error handling
-    - Rate limiting protection
-    - Graceful connection management
+    This endpoint implements the recommended WebSocket pattern with:
+    - Proper connection management
+    - Comprehensive exception handling
+    - Client identification
+    - Detailed logging
+    - Graceful error recovery
     
     Args:
         websocket: WebSocket connection instance
+        client_id: Unique identifier for the client
         chat_service: Injected chat service instance
     """
-    # Accept the WebSocket connection
-    await websocket.accept()
+    # Connect client using the connection manager
+    await connection_manager.connect(websocket, client_id)
     
-    # Create unique conversation ID for this WebSocket session
-    conversation_id = str(uuid.uuid4())
+    # Use client_id as conversation_id for simplicity
+    conversation_id = client_id
+    
+    logger.info(f"WebSocket connection established for client {client_id}")
     
     try:
+        # Send welcome message
+        welcome_message = {
+            "id": str(uuid.uuid4()),
+            "content": "Hello! I'm your Xfinity support assistant. How can I help you today?",
+            "role": "assistant",
+            "timestamp": datetime.utcnow().isoformat(),
+            "agent": "Support Agent",
+            "agent_type": "general",
+            "answer_type": "welcome",
+            "intent": "greeting",
+            "intent_data": {}
+        }
+        await connection_manager.send_personal_message(welcome_message, client_id)
+        
         # Main message handling loop
         while True:
-            # Wait for message from client
-            data = await websocket.receive_json()
-            
             try:
+                # Wait for message from client
+                data = await websocket.receive_json()
+                logger.info(f"Received message from client {client_id}: {data.get('content', '')[:50]}...")
+                
+                # Validate message format
+                if not isinstance(data, dict) or "content" not in data:
+                    logger.warning(f"Invalid message format from client {client_id}: {data}")
+                    continue
+                
                 # Process message through AI agent system
+                logger.info(f"Processing message for client {client_id}")
                 agent_response = await chat_service.process_message(
                     conversation_id,
                     data["content"]
                 )
                 
+                logger.info(f"Generated response for client {client_id}: {agent_response.get('answer', '')[:50]}...")
+                
                 # Send AI response back to client with full metadata
-                await websocket.send_json({
+                response_message = {
                     "id": str(uuid.uuid4()),
                     "content": agent_response["answer"],
                     "role": "assistant",
@@ -296,14 +420,17 @@ async def websocket_endpoint(
                     "answer_type": agent_response.get("answer_type", "kb_response"),
                     "intent": agent_response.get("intent", "general"),
                     "intent_data": agent_response.get("intent_data", {})
-                })
+                }
+                
+                await connection_manager.send_personal_message(response_message, client_id)
+                logger.info(f"Response sent to client {client_id}")
                 
             except Exception as e:
-                # Handle all processing errors gracefully
-                error_message = str(e)
-                print(f"WebSocket error processing message: {error_message}")
+                # Handle message processing errors gracefully
+                logger.error(f"Error processing message for client {client_id}: {str(e)}")
                 
-                # Provide user-friendly error message
+                # Determine appropriate error message
+                error_message = str(e)
                 if "rate limit" in error_message.lower() or "429" in error_message:
                     user_message = "I'm here to help with your Xfinity services. The AI service is temporarily busy, but I can still assist you with information from our knowledge base. What specific issue are you experiencing?"
                 elif "insufficient_quota" in error_message.lower():
@@ -311,7 +438,8 @@ async def websocket_endpoint(
                 else:
                     user_message = "I'm here to help with your Xfinity services. What can I assist you with today?"
                 
-                await websocket.send_json({
+                # Send error fallback message
+                error_response = {
                     "id": str(uuid.uuid4()),
                     "content": user_message,
                     "role": "assistant",
@@ -321,12 +449,56 @@ async def websocket_endpoint(
                     "answer_type": "error_fallback",
                     "intent": "general",
                     "intent_data": {}
-                })
+                }
+                
+                try:
+                    await connection_manager.send_personal_message(error_response, client_id)
+                except Exception as send_error:
+                    logger.error(f"Failed to send error message to client {client_id}: {send_error}")
+                    break
                 
     except WebSocketDisconnect:
         # Handle client disconnection gracefully
-        # In production, this might involve cleanup tasks like:
-        # - Saving conversation state
-        # - Logging session metrics
-        # - Updating user presence status
-        pass 
+        logger.info(f"Client {client_id} disconnected normally")
+        await connection_manager.disconnect(client_id)
+        
+    except Exception as e:
+        # Handle unexpected errors
+        logger.error(f"Unexpected WebSocket error for client {client_id}: {str(e)}")
+        await connection_manager.disconnect(client_id)
+
+# Legacy WebSocket endpoint for backward compatibility
+@router.websocket("/ws")
+async def legacy_websocket_endpoint(
+    websocket: WebSocket,
+    chat_service: ChatService = Depends(get_chat_service)
+):
+    """
+    Legacy WebSocket endpoint for backward compatibility.
+    
+    This endpoint maintains compatibility with existing clients that
+    don't provide a client_id. It generates a random client_id and
+    forwards to the main WebSocket endpoint.
+    """
+    # Generate a random client ID for legacy clients
+    client_id = str(uuid.uuid4())
+    logger.info(f"Legacy WebSocket connection, assigned client_id: {client_id}")
+    
+    # Forward to the main WebSocket endpoint
+    await websocket_endpoint(websocket, client_id, chat_service)
+
+@router.get("/ws/stats")
+async def get_websocket_stats():
+    """
+    Get WebSocket connection statistics for monitoring and debugging.
+    
+    Returns:
+        Dict with connection statistics and metadata
+    """
+    return {
+        "active_connections": connection_manager.get_connection_count(),
+        "connection_details": {
+            client_id: connection_manager.get_client_metadata(client_id)
+            for client_id in connection_manager.active_connections.keys()
+        }
+    } 

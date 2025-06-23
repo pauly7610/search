@@ -29,6 +29,15 @@ from contextlib import asynccontextmanager
 import uvicorn
 import logging
 from prometheus_client import make_asgi_app
+from pydantic import ValidationError
+
+# Import configuration and exception handling
+from src.config.settings import settings
+from src.core.exceptions import (
+    BaseAPIException, ValidationException, api_exception_handler,
+    validation_exception_handler, http_exception_handler_custom,
+    general_exception_handler
+)
 
 # Import all API routers for different functional areas
 from src.api import chat, analytics, feedback, knowledge, profile
@@ -80,11 +89,17 @@ async def lifespan(app: FastAPI):
 # Initialize FastAPI application with comprehensive metadata
 # The lifespan parameter ensures proper resource management
 app = FastAPI(
-    title="Customer Support Agent Demo API",
+    title=settings.APP_NAME,
     description="API for the autonomous customer support agent system",
-    version="1.0.0",
-    lifespan=lifespan
+    version=settings.VERSION,
+    lifespan=lifespan,
+    debug=settings.DEBUG
 )
+
+# Add exception handlers for standardized error responses
+app.add_exception_handler(BaseAPIException, api_exception_handler)
+app.add_exception_handler(ValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 # Mount Prometheus metrics endpoint for monitoring
 # This provides real-time metrics that can be scraped by monitoring systems
@@ -96,9 +111,7 @@ app.mount("/metrics", make_asgi_app())
 # are served from different domains or ports during development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # TODO: Configure this properly for production
-    # Production security note: Replace ["*"] with specific allowed origins
-    # Example: ["https://yourdomain.com", "https://app.yourdomain.com"]
+    allow_origins=settings.cors_origins_list, # Use configured origins as list
     allow_credentials=True, # Allow cookies and authentication headers
     allow_methods=["*"], # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"], # Allow all headers including custom ones

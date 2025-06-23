@@ -7,10 +7,16 @@ from alembic import context
 
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backend/src')))
-from backend.src.models import chat_models, analytics_models, feedback_models
-from backend.src.config import database
-from backend.src.config.database import Base
+
+# Add both paths to handle different import patterns
+backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backend'))
+src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backend/src'))
+sys.path.insert(0, backend_path)
+sys.path.insert(0, src_path)
+
+from src.models import chat_models, analytics_models, feedback_models
+from src.config.database import Base
+from src.config.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -45,7 +51,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # Use database URL from settings
+    url = settings.DATABASE_URL
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -64,9 +71,11 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    from sqlalchemy import create_engine
+    
+    # Create engine using settings database URL
+    connectable = create_engine(
+        settings.DATABASE_URL,
         poolclass=pool.NullPool,
     )
 

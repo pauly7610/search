@@ -28,6 +28,8 @@ from langchain_openai import ChatOpenAI
 from typing import Dict, List, Optional
 import os
 from src.services.intent_service import IntentService
+from src.repositories.chat_repository import ChatRepository
+from src.config.database import get_db
 import re
 
 class ChatService:
@@ -248,7 +250,7 @@ class ChatService:
         else:
             return "general"
 
-    async def coordinator(self, conversation_id: str, message: str) -> Dict:
+    async def coordinator(self, conversation_id: str, message: str, db_session=None) -> Dict:
         """
         Main coordination method orchestrating the complete response flow.
         
@@ -257,7 +259,8 @@ class ChatService:
         2. Knowledge base search for relevant responses
         3. LLM fallback for complex or unmatched queries
         4. Response packaging with metadata
-        5. Error handling and graceful degradation
+        5. Database persistence for conversation history
+        6. Error handling and graceful degradation
         
         The coordinator ensures that every user message receives a response,
         either from the knowledge base or from the LLM, with appropriate
@@ -266,11 +269,27 @@ class ChatService:
         Args:
             conversation_id: Unique session identifier
             message: User's input message
+            db_session: Database session for persistence
             
         Returns:
             Dict: Complete response with answer, agent info, and metadata
         """
         try:
+            # Initialize repository if database session provided
+            chat_repo = ChatRepository(db_session) if db_session else None
+            
+            # Store user message in database if available
+            if chat_repo:
+                try:
+                    await chat_repo.get_or_create_conversation(conversation_id)
+                    await chat_repo.add_message(
+                        conversation_id=conversation_id,
+                        content=message,
+                        sender="user",
+                        role="user"
+                    )
+                except Exception as e:
+                    print(f"Database error storing user message: {e}")
             # Step 1: Classify message intent and route to appropriate agent
             if self.intent_service_available:
                 try:
@@ -333,8 +352,8 @@ class ChatService:
                         answer = "I'm here to help with your Xfinity services. I can assist with internet issues, billing questions, equipment troubleshooting, and general support. What specific problem are you experiencing?"
                         answer_type = "kb_fallback"
             
-            # Step 4: Package response with complete metadata
-            return {
+            # Step 4: Store AI response in database if available
+            response_data = {
                 "answer": answer,
                 "agent": self.kb[agent]["name"],
                 "agent_type": agent,
@@ -342,6 +361,25 @@ class ChatService:
                 "intent": intent,
                 "intent_data": intent_data
             }
+            
+            if chat_repo:
+                try:
+                    await chat_repo.add_message(
+                        conversation_id=conversation_id,
+                        content=answer,
+                        sender="agent",
+                        role="assistant",
+                        agent=self.kb[agent]["name"],
+                        agent_type=agent,
+                        answer_type=answer_type,
+                        intent=intent,
+                        intent_data=intent_data
+                    )
+                except Exception as e:
+                    print(f"Database error storing AI response: {e}")
+            
+            # Step 5: Package and return response with complete metadata
+            return response_data
         except Exception as e:
             print(f"Coordinator error: {e}")
             # Ultimate fallback response
@@ -354,7 +392,7 @@ class ChatService:
                 "intent_data": {"confidence": 0.0, "keywords": []}
             }
 
-    async def process_message(self, conversation_id: str, message: str) -> Dict:
+    async def process_message(self, conversation_id: str, message: str, db_session=None) -> Dict:
         """
         Public interface for processing user messages.
         
@@ -365,11 +403,12 @@ class ChatService:
         Args:
             conversation_id: Unique session identifier
             message: User's input message
+            db_session: Database session for persistence
             
         Returns:
             Dict: Complete response with answer and metadata
         """
-        return await self.coordinator(conversation_id, message)
+        return await self.coordinator(conversation_id, message, db_session)
 
     def get_conversation_history(self, conversation_id: str) -> List[Dict]:
         """

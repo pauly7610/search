@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.projectName }}-backend
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: backend
+    version: {{ .Values.global.image.backend.tag }}
+    cloud: {{ .Values.global.cloud }}
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: {{ .Values.global.image.backend.tag }}
+        cloud: {{ .Values.global.cloud }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.backend.service.metricsPort }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: {{ .Values.global.projectName }}-backend
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+        - name: backend
+          image: "{{ .Values.global.image.backend.repository }}:{{ .Values.global.image.backend.tag }}"
+          imagePullPolicy: {{ .Values.global.image.backend.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.service.port }}
+              name: http
+              protocol: TCP
+            - containerPort: {{ .Values.backend.service.metricsPort }}
+              name: metrics
+              protocol: TCP
+          env:
+            # Required secrets
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.projectName }}-secrets
+                  key: secret-key
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.projectName }}-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.projectName }}-secrets
+                  key: redis-url
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.projectName }}-secrets
+                  key: openai-api-key
+                  optional: true
+            # Environment variables from values
+            {{- range $key, $value := .Values.backend.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+          {{- if .Values.backend.healthcheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.backend.healthcheck.livenessPath }}
+              port: {{ .Values.backend.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.backend.healthcheck.readinessPath }}
+              port: {{ .Values.backend.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - backend
+                topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.projectName }}-backend-service
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: backend
+    cloud: {{ .Values.global.cloud }}
+spec:
+  selector:
+    app: backend
+  ports:
+    - name: http
+      port: {{ .Values.backend.service.port }}
+      targetPort: {{ .Values.backend.service.port }}
+      protocol: TCP
+    - name: metrics
+      port: {{ .Values.backend.service.metricsPort }}
+      targetPort: {{ .Values.backend.service.metricsPort }}
+      protocol: TCP
+  type: {{ .Values.backend.service.type }} 

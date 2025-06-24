@@ -1,0 +1,118 @@
+# GCP-specific values for Xfinity AI Platform
+global:
+  cloud: gcp
+  environment: production
+
+# GCP-specific ingress configuration
+ingress:
+  enabled: true
+  className: "gce"
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "xfinity-ai-ip"
+    networking.gke.io/managed-certificates: "xfinity-ai-ssl-cert"
+    kubernetes.io/ingress.allow-http: "false"
+  hosts:
+    - host: app.xfinity-ai.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: xfinity-ai-frontend
+            port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: xfinity-ai-backend
+            port: 8000
+
+# GCP-specific image configuration
+image:
+  backend:
+    repository: us-central1-docker.pkg.dev/xfinity-ai-prod/xfinity-ai/backend
+    tag: latest
+    pullPolicy: Always
+  frontend:
+    repository: us-central1-docker.pkg.dev/xfinity-ai-prod/xfinity-ai/frontend
+    tag: latest
+    pullPolicy: Always
+
+# GCP-specific storage configuration
+persistence:
+  storageClass: "standard-rwo"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+# GCP-specific database configuration
+database:
+  type: cloud-sql
+  host: 127.0.0.1 # Cloud SQL Proxy
+  port: 5432
+  ssl: require
+  cloudSqlProxy:
+    enabled: true
+    instanceConnectionName: "xfinity-ai-prod:us-central1:xfinity-ai-postgres"
+
+# GCP-specific Redis configuration
+redis:
+  type: memorystore
+  host: 10.0.0.3 # Private IP
+  port: 6379
+  ssl: false
+
+# GCP-specific monitoring
+monitoring:
+  enabled: true
+  provider: stackdriver
+  stackdriver:
+    enabled: true
+    projectId: "xfinity-ai-prod"
+
+# GCP-specific service mesh
+serviceMesh:
+  enabled: true
+  type: istio
+  istio:
+    enabled: true
+    injection: enabled
+
+# GCP-specific resource limits
+resources:
+  backend:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  frontend:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# GCP-specific autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# GCP-specific node affinity
+nodeAffinity:
+  enabled: true
+  nodeSelector:
+    cloud.google.com/gke-nodepool: "default-pool"
+
+# GCP-specific security
+security:
+  podSecurityPolicy:
+    enabled: true
+  networkPolicy:
+    enabled: true
+  workloadIdentity:
+    enabled: true
+    serviceAccount: "xfinity-ai-ksa"

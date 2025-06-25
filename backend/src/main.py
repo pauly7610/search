@@ -40,7 +40,7 @@ from src.core.exceptions import (
 )
 
 # Import all API routers for different functional areas
-from src.api import chat, analytics, feedback, knowledge, profile
+from src.api import chat, analytics, feedback, knowledge, profile, auth
 
 # Configure structured logging for production monitoring
 # This setup ensures consistent log formatting across the application
@@ -120,6 +120,7 @@ app.add_middleware(
 # Register API routers with versioned prefixes and tags
 # This modular approach allows for easy API versioning and organization
 # Each router handles a specific domain of functionality
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["chat"])
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
 app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"])

@@ -19,22 +19,17 @@
 
 import { useState, useCallback } from 'react';
 import { useChat } from './useChat';
-import { Message } from '../types/chat';
+import { Message, IntentData } from '../types/chat';
 
-interface IntentData {
-  /**
-   * Intent classification data structure for AI transparency.
-   * 
-   * This interface defines the structure of intent data returned by the AI
-   * system to provide users with insight into how their messages are
-   * interpreted and routed.
-   */
-  intent: string;      // Classified intent category (technical, billing, general)
-  confidence: number;  // Confidence score [0-1] for the classification
-  keywords: string[];  // Key terms that influenced the classification
+interface UseAIChatReturn {
+  messages: Message[];
+  sendMessage: (text: string) => Promise<void>;
+  isTyping: boolean;
+  intentData: IntentData | null;
+  getConversationContext: () => { role: "user" | "assistant"; content: string; }[];
 }
 
-export const useAIChat = () => {
+export const useAIChat = (): UseAIChatReturn => {
   /**
    * Enhanced AI chat hook with intelligent message handling and context management.
    * 
@@ -58,6 +53,9 @@ export const useAIChat = () => {
   // Destructure base chat functionality from the core chat hook
   // This provides the fundamental messaging capabilities that we enhance
   const { messages, sendMessage: baseSendMessage, isTyping } = useChat();
+
+  // State for managing intent classification data
+  const [intentData, setIntentData] = useState<IntentData | null>(null);
 
   // Enhanced message sending with comprehensive error handling
   const sendMessage = useCallback(async (text: string) => {
@@ -117,6 +115,7 @@ export const useAIChat = () => {
     messages,                    // Complete message history with metadata
     sendMessage,                 // Enhanced message sending with error handling
     isTyping,                   // AI processing status indicator
+    intentData,                 // Intent classification data for transparency
     getConversationContext      // Context extraction for AI continuity
   };
 }; 

@@ -14,7 +14,7 @@ src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backen
 sys.path.insert(0, backend_path)
 sys.path.insert(0, src_path)
 
-from src.models import chat_models, analytics_models, feedback_models
+from src.models import chat_models, analytics_models, feedback_models, auth_models
 from src.config.database import Base
 from src.config.settings import settings
 
@@ -51,8 +51,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    # Use database URL from settings
-    url = settings.DATABASE_URL
+    # Use synchronous database URL from settings for Alembic
+    url = settings.DATABASE_URL_SYNC
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -73,9 +73,9 @@ def run_migrations_online() -> None:
     """
     from sqlalchemy import create_engine
     
-    # Create engine using settings database URL
+    # Create engine using synchronous database URL for Alembic
     connectable = create_engine(
-        settings.DATABASE_URL,
+        settings.DATABASE_URL_SYNC,
         poolclass=pool.NullPool,
     )
 

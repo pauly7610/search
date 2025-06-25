@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str = Field(
         default="postgresql+asyncpg://postgres:password@localhost:5432/customer_support"
     )
+    DATABASE_URL_SYNC: str = Field(
+        default="postgresql://postgres:password@localhost:5432/customer_support"
+    )
     DATABASE_POOL_SIZE: int = 5
     DATABASE_MAX_OVERFLOW: int = 10
     DATABASE_POOL_TIMEOUT: int = 30
@@ -65,8 +68,9 @@ class Settings(BaseSettings):
     LOG_FORMAT: str = "json"
     
     class Config:
-        env_file = os.path.join(os.path.dirname(__file__), "..", ".env")  # From config/ to src/.env
+        env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")  # From config/ to backend/.env
         case_sensitive = True
+        extra = "ignore"  # Allow extra fields for AgentAuth configuration
 
     @property
     def is_production(self) -> bool:

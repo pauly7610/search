@@ -7,4 +7,4 @@ setup(
     install_requires=[
         # Dependencies will be read from requirements.txt
     ],
-) 
+)

@@ -1,37 +1,211 @@
-# Agent Routing & Enhanced Intent Classification
+# Agent Routing & Enhanced Conversational Flow
 
 ## Overview
 
-The **Xfinity Agentic AI Platform** features a sophisticated multi-agent routing system with **enhanced intent classification**, confidence scoring, and local intent service with cloud fallback. The system automatically routes user queries to specialized AI agents based on advanced natural language understanding.
+The **Xfinity Agentic AI Platform** features a sophisticated multi-agent routing system with **enhanced conversational flow**, follow-up detection, adaptive tone management, and intelligent frustration analysis. The system automatically routes user queries to specialized AI agents while maintaining context-aware, human-centered conversations that adapt to customer emotional state and conversation history.
 
 ## Enhanced Multi-Agent Architecture
 
 ### **Specialized Agents**
 
-#### **🔧 Tech Support Agent**
+#### **🔧 Tech Support Agent with Conversational Flow**
 
 - **Specialization**: Hardware troubleshooting, connectivity issues, equipment setup
 - **Confidence Threshold**: 0.8+ for direct routing
 - **Primary Patterns**: Internet, WiFi, modem, router, speed, outage
-- **Advanced Capabilities**: Multi-step troubleshooting, device diagnostics
+- **Advanced Capabilities**: Multi-step troubleshooting, device diagnostics, follow-up solution tracking
+- **Conversational Features**:
+  - Detects "that didn't work" patterns for technical solutions
+  - Provides alternative troubleshooting approaches
+  - Tracks attempted solutions to avoid repetition
+  - Escalates to human tech support when frustration is high
 
-#### **💰 Billing Agent**
+#### **💰 Billing Agent with Empathetic Responses**
 
 - **Specialization**: Account management, billing inquiries, plan changes
 - **Confidence Threshold**: 0.85+ for direct routing
 - **Primary Patterns**: Bill, payment, charge, plan, upgrade, account
-- **Advanced Capabilities**: Account analysis, plan recommendations
+- **Advanced Capabilities**: Account analysis, plan recommendations, payment assistance
+- **Conversational Features**:
+  - Recognizes billing frustration and responds empathetically
+  - Handles "still too expensive" follow-ups with alternative options
+  - Proactively offers payment plans when cost concerns detected
+  - Escalates to billing specialists for complex disputes
 
-#### **ℹ️ General Agent**
+#### **ℹ️ General Agent with Adaptive Communication**
 
 - **Specialization**: Company information, policies, general inquiries
 - **Confidence Threshold**: 0.7+ for direct routing
 - **Primary Patterns**: Hours, location, contact, policy, information
-- **Advanced Capabilities**: Policy interpretation, general guidance
+- **Advanced Capabilities**: Policy interpretation, general guidance, service information
+- **Conversational Features**:
+  - Adapts tone based on customer inquiry urgency
+  - Provides alternative contact methods when standard options don't work
+  - Handles "I need to speak to someone" requests with appropriate routing
+  - Maintains helpful tone while managing customer expectations
+
+## Enhanced Conversational Flow Management
+
+### **Follow-up Detection & Context Preservation**
+
+The platform now includes sophisticated follow-up detection that recognizes when customers indicate previous solutions didn't work:
+
+```python
+class ConversationFlowManager:
+    """
+    Advanced conversation flow management with human-centered responses.
+
+    Features:
+    - Follow-up pattern recognition
+    - Conversation context tracking
+    - Frustration level monitoring
+    - Adaptive tone selection
+    - Solution effectiveness tracking
+    """
+
+    def __init__(self):
+        self.follow_up_patterns = [
+            r"(?i)that didn'?t work",
+            r"(?i)still not working",
+            r"(?i)it'?s still broken",
+            r"(?i)try something else",
+            r"(?i)need another solution",
+            r"(?i)nothing is working",
+            r"(?i)same problem"
+        ]
+
+        self.frustration_indicators = [
+            r"[A-Z]{3,}",                    # Caps lock usage
+            r"[!]{2,}",                      # Multiple exclamation marks
+            r"[?]{2,}",                      # Multiple question marks
+            r"(?i)frustrated|annoyed|angry", # Explicit frustration
+            r"(?i)ridiculous|stupid|awful",  # Strong negative language
+            r"(?i)terrible|horrible|useless" # Service quality complaints
+        ]
+
+    def analyze_conversation_context(self, message: str, context: ConversationContext) -> Dict[str, Any]:
+        """
+        Analyze message in conversation context for flow management.
+
+        Returns conversation analysis including:
+        - Follow-up detection status
+        - Frustration level (0-10)
+        - Recommended tone
+        - Solution tracking
+        - Escalation recommendations
+        """
+
+        # Detect follow-up patterns
+        is_follow_up = self.detect_follow_up(message)
+
+        # Calculate frustration level
+        frustration_level = self.calculate_frustration_level(message, context)
+
+        # Determine adaptive tone
+        recommended_tone = self.determine_adaptive_tone(context, is_follow_up, frustration_level)
+
+        # Track solution effectiveness
+        solution_effectiveness = self.analyze_solution_effectiveness(context)
+
+        return {
+            "is_follow_up": is_follow_up,
+            "frustration_level": frustration_level,
+            "recommended_tone": recommended_tone,
+            "context_state": self.determine_context_state(context, is_follow_up),
+            "solution_effectiveness": solution_effectiveness,
+            "escalation_recommendation": self.should_escalate(frustration_level, context),
+            "alternative_approaches": self.suggest_alternatives(context, is_follow_up)
+        }
+
+    def determine_adaptive_tone(self, context: ConversationContext, is_follow_up: bool, frustration_level: int) -> str:
+        """
+        Determine appropriate conversational tone based on context analysis.
+
+        Tone Progression:
+        1. helpful_friendly (Default professional approach)
+        2. understanding_adaptive (Acknowledges solution failure)
+        3. patient_alternative (Multiple attempts, different approaches)
+        4. empathetic_supportive (Shows understanding for frustration)
+        5. empathetic_escalation (Offers human agent assistance)
+        """
+
+        if frustration_level >= 8:
+            return "empathetic_escalation"
+        elif frustration_level >= 6:
+            return "empathetic_supportive"
+        elif is_follow_up or context.attempt_count >= 2:
+            return "patient_alternative"
+        elif context.attempt_count >= 1:
+            return "understanding_adaptive"
+        else:
+            return "helpful_friendly"
+```
+
+### **Adaptive Response Generation**
+
+```python
+def generate_contextual_response(
+    message: str,
+    intent_result: Dict,
+    conversation_analysis: Dict,
+    context: ConversationContext
+) -> Dict[str, Any]:
+    """
+    Generate responses that adapt to conversation flow and customer emotional state.
+
+    Response Adaptation Features:
+    - Acknowledges previous solution failures with empathy
+    - Provides alternative approaches instead of repeating solutions
+    - Escalates tone appropriately based on frustration level
+    - Maintains conversation context across interactions
+    """
+
+    base_response = get_knowledge_base_response(intent_result)
+
+    # Apply conversational flow adaptations
+    if conversation_analysis["is_follow_up"]:
+        # Acknowledge that previous solution didn't work
+        empathy_prefix = generate_empathy_acknowledgment(conversation_analysis["recommended_tone"])
+
+        # Provide alternative solution
+        alternative_solution = get_alternative_solution(
+            intent_result["intent"],
+            context.previous_solutions
+        )
+
+        adapted_response = f"{empathy_prefix} {alternative_solution}"
+    else:
+        # Standard response with tone adaptation
+        adapted_response = apply_tone_adaptation(
+            base_response,
+            conversation_analysis["recommended_tone"]
+        )
+
+    # Add escalation offer if high frustration
+    if conversation_analysis["escalation_recommendation"]:
+        escalation_offer = generate_escalation_offer(conversation_analysis["recommended_tone"])
+        adapted_response = f"{adapted_response}\n\n{escalation_offer}"
+
+    return {
+        "content": adapted_response,
+        "conversation_flow": {
+            "is_follow_up": conversation_analysis["is_follow_up"],
+            "frustration_level": conversation_analysis["frustration_level"],
+            "tone": conversation_analysis["recommended_tone"],
+            "attempt_count": context.attempt_count + 1,
+            "context_state": conversation_analysis["context_state"]
+        },
+        "business_metrics": {
+            "solution_effectiveness": conversation_analysis["solution_effectiveness"],
+            "escalation_likelihood": conversation_analysis.get("escalation_likelihood", 0),
+            "customer_satisfaction_predicted": predict_satisfaction(conversation_analysis)
+        }
+    }
+```
 
 ## Enhanced Intent Classification System
 
-### **Local Intent Service**
+### **Local Intent Service with Conversational Context**
 
 The platform now includes a high-performance local intent classification service with cloud fallback:
 

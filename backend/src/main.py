@@ -18,6 +18,7 @@ routers for different functional areas (chat, analytics, feedback, etc.)
 """
 
 from dotenv import load_dotenv
+
 # Load environment variables first to ensure all configuration is available
 # before importing other modules that may depend on environment settings
 load_dotenv()
@@ -34,35 +35,38 @@ from pydantic import ValidationError
 # Import configuration and exception handling
 from src.config.settings import settings
 from src.core.exceptions import (
-    BaseAPIException, ValidationException, api_exception_handler,
-    validation_exception_handler, http_exception_handler_custom,
-    general_exception_handler
+    BaseAPIException,
+    ValidationException,
+    api_exception_handler,
+    validation_exception_handler,
+    http_exception_handler_custom,
+    general_exception_handler,
 )
 
 # Import all API routers for different functional areas
-from src.api import chat, analytics, feedback, knowledge, profile, auth
+from src.api import chat, analytics, feedback, knowledge, profile, auth, metrics
 
 # Configure structured logging for production monitoring
 # This setup ensures consistent log formatting across the application
 # with timestamps, log levels, and module names for better debugging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     Application lifespan manager for startup and shutdown events.
-    
+
     This context manager handles the initialization and cleanup of resources
     that need to persist throughout the application lifecycle, such as:
     - Database connection pools
     - ML model loading
     - Cache initialization
     - Background task setup
-    
+
     The startup phase occurs before the application begins serving requests,
     while shutdown ensures graceful cleanup when the application terminates.
     """
@@ -74,9 +78,9 @@ async def lifespan(app: FastAPI):
     # - Load pre-trained ML models into memory
     # - Set up Redis connections for caching
     # - Initialize background task queues
-    
-    yield # Application runs here
-    
+
+    yield  # Application runs here
+
     # Shutdown phase - cleanup resources
     logger.info("Shutting down application...")
     # TODO: Close database connections, cleanup resources, etc.
@@ -86,6 +90,7 @@ async def lifespan(app: FastAPI):
     # - Cancel background tasks
     # - Release file handles and network connections
 
+
 # Initialize FastAPI application with comprehensive metadata
 # The lifespan parameter ensures proper resource management
 app = FastAPI(
@@ -93,7 +98,7 @@ app = FastAPI(
     description="API for the autonomous customer support agent system",
     version=settings.VERSION,
     lifespan=lifespan,
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
 )
 
 # Add exception handlers for standardized error responses
@@ -111,10 +116,10 @@ app.mount("/metrics", make_asgi_app())
 # are served from different domains or ports during development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list, # Use configured origins as list
-    allow_credentials=True, # Allow cookies and authentication headers
-    allow_methods=["*"], # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
-    allow_headers=["*"], # Allow all headers including custom ones
+    allow_origins=settings.cors_origins_list,  # Use configured origins as list
+    allow_credentials=True,  # Allow cookies and authentication headers
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allow all headers including custom ones
 )
 
 # Register API routers with versioned prefixes and tags
@@ -126,31 +131,34 @@ app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytic
 app.include_router(feedback.router, prefix="/api/v1/feedback", tags=["feedback"])
 app.include_router(knowledge.router, prefix="/api/v1/knowledge", tags=["knowledge"])
 app.include_router(profile.router, prefix="/api/v1/user", tags=["user"])
+app.include_router(metrics.router, prefix="/api/v1/metrics", tags=["metrics"])
 
 # Optional static file serving for documentation or demo content
 # Uncomment when static assets are needed (images, docs, etc.)
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
 @app.get("/")
 async def root():
     """
     Root endpoint providing basic API information.
-    
+
     Returns a welcome message that can be used to verify the API is running.
     This is often the first endpoint hit by monitoring systems or developers
     testing the API connectivity.
     """
     return {"message": "Welcome to the Customer Support Agent API"}
 
+
 @app.get("/health")
 async def health_check():
     """
     Health check endpoint for deployment and monitoring systems.
-    
+
     This endpoint should be lightweight and return quickly to indicate
     that the application is running and responsive. Load balancers and
     container orchestration systems typically use this for health checks.
-    
+
     In production, this could be enhanced to check:
     - Database connectivity
     - External service availability
@@ -159,16 +167,18 @@ async def health_check():
     """
     return {"status": "healthy"}
 
+
 @app.get("/api/v1/health")
 def health():
     """
     Versioned health check endpoint for API-specific monitoring.
-    
+
     This duplicates the functionality of /health but under the API version
     namespace, allowing for API-specific health monitoring that's separate
     from general application health checks.
     """
     return {"status": "ok"}
+
 
 # Application entry point for direct execution
 # This allows the application to be run directly with `python main.py`

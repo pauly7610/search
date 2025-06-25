@@ -9,7 +9,47 @@ The Xfinity Agentic AI Platform provides comprehensive REST and **enhanced WebSo
 - **REST API**: `http://localhost:8000/api/v1`
 - **Enhanced WebSocket**: `ws://localhost:8000/api/v1/chat/ws`
 - **Client-Specific WebSocket**: `ws://localhost:8000/api/v1/chat/ws/{client_id}`
+- **Business Intelligence**: `http://localhost:8000/api/v1/metrics`
 - **Documentation**: `http://localhost:8000/docs` (Swagger UI)
+
+## Enhanced Conversational Flow Features
+
+### **Follow-up Detection Patterns**
+
+The system automatically detects when customers indicate that previous solutions didn't work:
+
+- **Pattern Recognition**: `"that didn't work"`, `"still not working"`, `"it's still broken"`, `"try something else"`
+- **Contextual Responses**: Acknowledges failure with empathy instead of repeating solutions
+- **Alternative Solutions**: Provides different troubleshooting approaches
+- **Escalation Triggers**: Proactively offers human help when frustration is high
+
+### **Adaptive Tone System**
+
+The AI dynamically adjusts its communication style based on conversation context:
+
+1. **helpful_friendly** (Default): Professional, solution-focused approach
+2. **understanding_adaptive**: Acknowledges previous solution failures empathetically
+3. **patient_alternative**: Offers different approaches when multiple attempts made
+4. **empathetic_supportive**: Shows understanding for customer frustration
+5. **empathetic_escalation**: Offers human agent assistance for high frustration
+
+### **Frustration Detection Scale**
+
+Customer emotional state is tracked on a 0-10 scale:
+
+- **0-2**: Calm, neutral interaction
+- **3-4**: Mild concern or impatience
+- **5-6**: Moderate frustration detected
+- **7-8**: High frustration - empathetic responses triggered
+- **9-10**: Extreme frustration - automatic escalation recommendation
+
+**Indicators tracked:**
+
+- Caps lock usage (ALL CAPS text)
+- Multiple punctuation marks (!!! or ???)
+- Explicit frustration words ("frustrated", "angry", "annoyed")
+- Conversation attempt count
+- Solution failure patterns
 
 ## Authentication
 
@@ -66,7 +106,7 @@ WS /api/v1/chat/ws/{client_id}
 }
 ```
 
-**Receive Message:**
+**Receive Message (Enhanced with Conversational Flow):**
 
 ```json
 {
@@ -81,10 +121,47 @@ WS /api/v1/chat/ws/{client_id}
     "matched_patterns": ["internet", "not working"],
     "agent_type": "tech_support"
   },
+  "conversation_flow": {
+    "is_follow_up": false,
+    "frustration_level": 2,
+    "tone": "helpful_friendly",
+    "attempt_count": 1,
+    "context_state": "initial"
+  },
   "source": "knowledge_base",
   "timestamp": "2024-01-15T10:30:01Z",
   "client_id": "client-abc123",
   "response_time": 0.45
+}
+```
+
+**Follow-up Response Example:**
+
+```json
+{
+  "id": "msg-124",
+  "role": "assistant",
+  "content": "I understand that didn't work for you. Let me suggest a different approach. Have you checked if there are any service outages in your area?",
+  "agent": "Tech Support Agent",
+  "agent_type": "tech_support",
+  "intent": "connectivity_issues",
+  "intent_data": {
+    "confidence": 0.87,
+    "matched_patterns": ["that didn't work"],
+    "agent_type": "tech_support"
+  },
+  "conversation_flow": {
+    "is_follow_up": true,
+    "frustration_level": 4,
+    "tone": "understanding_adaptive",
+    "attempt_count": 2,
+    "context_state": "follow_up",
+    "previous_solutions": ["modem_restart"]
+  },
+  "source": "knowledge_base",
+  "timestamp": "2024-01-15T10:32:15Z",
+  "client_id": "client-abc123",
+  "response_time": 0.38
 }
 ```
 
@@ -211,9 +288,175 @@ GET /api/v1/knowledge/search?q={query}&agent={agent_type}&confidence_threshold={
 }
 ```
 
-## Enhanced Analytics Endpoints
+## Enhanced Analytics & Business Intelligence Endpoints
 
-#### **Analytics Overview with WebSocket Metrics**
+#### **Conversation Quality Metrics**
+
+```http
+GET /api/v1/metrics/conversation-quality
+```
+
+**Response:**
+
+```json
+{
+  "overall_metrics": {
+    "total_conversations": 1250,
+    "intent_resolution_rate": 0.84,
+    "average_frustration_level": 2.3,
+    "escalation_rate": 0.12,
+    "follow_up_rate": 0.28
+  },
+  "tone_adaptation_analytics": {
+    "helpful_friendly": { "usage": 0.45, "success_rate": 0.89 },
+    "understanding_adaptive": { "usage": 0.23, "success_rate": 0.76 },
+    "patient_alternative": { "usage": 0.18, "success_rate": 0.71 },
+    "empathetic_supportive": { "usage": 0.1, "success_rate": 0.68 },
+    "empathetic_escalation": { "usage": 0.04, "success_rate": 0.55 }
+  },
+  "frustration_trends": [
+    {
+      "time_period": "2024-01-15T10:00:00Z",
+      "average_frustration": 2.1,
+      "high_frustration_conversations": 8,
+      "escalations_triggered": 3
+    }
+  ],
+  "follow_up_patterns": {
+    "that_didnt_work": 145,
+    "still_not_working": 89,
+    "try_something_else": 67,
+    "resolution_after_followup": 0.73
+  }
+}
+```
+
+#### **Individual Conversation Flow Analysis**
+
+```http
+GET /api/v1/metrics/conversation-flow/{conversation_id}
+```
+
+**Response:**
+
+```json
+{
+  "conversation_id": "conv-123",
+  "flow_analysis": {
+    "total_messages": 6,
+    "follow_up_detected": true,
+    "frustration_progression": [1, 2, 4, 3, 2, 1],
+    "tone_progression": [
+      "helpful_friendly",
+      "understanding_adaptive",
+      "patient_alternative",
+      "empathetic_supportive",
+      "understanding_adaptive",
+      "helpful_friendly"
+    ],
+    "solutions_attempted": ["modem_restart", "check_cables", "speed_test"],
+    "final_outcome": "resolved",
+    "escalation_likelihood": 0.23
+  },
+  "recommendations": [
+    "Customer showed good response to empathetic tone",
+    "Multiple technical solutions were effective",
+    "Low escalation risk - AI resolution successful"
+  ],
+  "business_insights": {
+    "resolution_time": "12 minutes",
+    "customer_satisfaction_predicted": 4.2,
+    "agent_effectiveness": "high"
+  }
+}
+```
+
+#### **Intent Resolution Rate Analysis**
+
+```http
+GET /api/v1/metrics/intent-resolution-rate?days={time_window}&intent={specific_intent}
+```
+
+**Response:**
+
+```json
+{
+  "time_window": "7 days",
+  "resolution_rates": {
+    "connectivity_issues": {
+      "total_conversations": 234,
+      "first_attempt_resolution": 0.68,
+      "overall_resolution": 0.89,
+      "average_attempts": 1.8,
+      "escalation_rate": 0.11
+    },
+    "billing_inquiry": {
+      "total_conversations": 156,
+      "first_attempt_resolution": 0.79,
+      "overall_resolution": 0.94,
+      "average_attempts": 1.4,
+      "escalation_rate": 0.06
+    },
+    "equipment_setup": {
+      "total_conversations": 98,
+      "first_attempt_resolution": 0.52,
+      "overall_resolution": 0.82,
+      "average_attempts": 2.3,
+      "escalation_rate": 0.18
+    }
+  },
+  "trends": [
+    {
+      "date": "2024-01-15",
+      "overall_resolution_rate": 0.84,
+      "improvement_from_previous": 0.03
+    }
+  ]
+}
+```
+
+#### **Escalation Predictions**
+
+```http
+GET /api/v1/metrics/escalation-predictions?active_only=true
+```
+
+**Response:**
+
+```json
+{
+  "predictions": [
+    {
+      "conversation_id": "conv-456",
+      "escalation_likelihood": 0.78,
+      "confidence": 0.91,
+      "factors": ["high_frustration", "multiple_attempts", "solution_failure"],
+      "recommendation": "offer_human_agent",
+      "predicted_escalation_time": "within_5_minutes",
+      "current_frustration_level": 7
+    },
+    {
+      "conversation_id": "conv-789",
+      "escalation_likelihood": 0.45,
+      "confidence": 0.73,
+      "factors": ["complex_intent", "solution_failure"],
+      "recommendation": "continue_ai",
+      "alternative_approaches": [
+        "try_different_agent",
+        "escalate_to_specialist_knowledge"
+      ]
+    }
+  ],
+  "summary": {
+    "total_active_conversations": 42,
+    "high_risk_conversations": 3,
+    "medium_risk_conversations": 8,
+    "proactive_interventions_available": 11
+  }
+}
+```
+
+#### **Analytics Overview with WebSocket & Conversation Metrics**
 
 ```http
 GET /api/v1/analytics/overview

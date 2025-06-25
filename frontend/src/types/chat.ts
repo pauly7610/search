@@ -9,6 +9,8 @@ export interface Message {
     answer_type?: string;
     intent?: string;
     intent_data?: Record<string, any>;
+    conversation_flow?: 'standard' | 'follow_up_adaptive' | 'empathetic_support';
+    is_follow_up?: boolean;
 }
   
 export interface Conversation {
@@ -20,6 +22,9 @@ export interface Conversation {
     createdAt: string;
     updatedAt: string;
     isActive: boolean;
+    frustration_level?: number;
+    attempt_count?: number;
+    tone_used?: string;
 }
   
 export interface ChatState {
@@ -28,6 +33,16 @@ export interface ChatState {
     isTyping: boolean;
     agentStatus: 'available' | 'busy' | 'away';
     connectionStatus: 'connected' | 'disconnected' | 'connecting';
+    conversationMetrics?: ConversationMetrics;
+}
+
+export interface ConversationMetrics {
+    processing_time_ms: number;
+    is_follow_up: boolean;
+    attempt_count: number;
+    frustration_level: number;
+    conversation_state: string;
+    tone_used: string;
 }
   
 export interface FeedbackData {
@@ -48,5 +63,8 @@ export interface AgentResponse {
     confidence: number;
     sources: string[];
     escalationNeeded: boolean;
+    conversation_flow?: string;
+    solution_summary?: string;
+    conversation_metrics?: ConversationMetrics;
 }
   

@@ -28,6 +28,7 @@ async_session = sessionmaker(
 # Create base class for models
 Base = declarative_base()
 
+
 # Dependency to get DB session
 async def get_db():
     async with async_session() as session:
@@ -38,4 +39,4 @@ async def get_db():
             await session.rollback()
             raise
         finally:
-            await session.close() 
+            await session.close()

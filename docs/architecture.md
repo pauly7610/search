@@ -23,22 +23,30 @@ The **Xfinity Agentic AI Demo Platform** is a comprehensive, production-ready cu
 - **Connection State Tracking**: Real-time connection health monitoring
 - **Performance Optimization**: Connection pooling and message batching
 
-### **🤖 Intelligent Backend (FastAPI, LangChain, OpenAI)**
+### **🤖 Intelligent Backend with Enhanced Conversational Flow (FastAPI, LangChain, OpenAI)**
 
-#### **Multi-Agent AI System**
+#### **Multi-Agent AI System with Human-Centered Flow**
 
 - **Tech Support Agent**: Hardware troubleshooting, connectivity issues, equipment setup
 - **Billing Agent**: Payment processing, plan management, account inquiries
 - **General Agent**: Company policies, service information, general inquiries
-- **Coordinator Agent**: Enhanced intent classification and intelligent routing
+- **Coordinator Agent**: Enhanced intent classification, intelligent routing, and conversation flow management
+
+#### **Enhanced Conversational Flow Management**
+
+- **Follow-up Detection**: Recognizes "that didn't work", "still not working", "try something else" patterns
+- **Adaptive Tone System**: 5-level empathy system (helpful_friendly → empathetic_escalation)
+- **Frustration Analysis**: Real-time sentiment monitoring with 0-10 frustration scale
+- **Context Preservation**: Conversation state tracking with solution attempt history
+- **Proactive Escalation**: Predictive analytics for identifying customers needing human help
 
 #### **Enhanced Natural Language Understanding**
 
 - **Local Intent Service**: Fast, reliable intent classification with cloud fallback
-- **Advanced Pattern Matching**: Multi-pattern matching with confidence scoring
-- **Semantic Knowledge Base**: Enhanced search with normalized keyword processing
-- **Query Preprocessing**: Handles punctuation, spaces, case variations
-- **Confidence Scoring**: Intent classification with reliability metrics
+- **Advanced Pattern Matching**: Multi-pattern matching with confidence scoring and follow-up detection
+- **Semantic Knowledge Base**: Enhanced search with normalized keyword processing and solution tracking
+- **Query Preprocessing**: Handles punctuation, spaces, case variations, and sentiment indicators
+- **Confidence Scoring**: Intent classification with reliability metrics and conversation context
 
 #### **Production Features**
 
@@ -72,54 +80,118 @@ The **Xfinity Agentic AI Demo Platform** is a comprehensive, production-ready cu
 
 ### **📊 Analytics & Business Intelligence**
 
-#### **Enhanced Real-time Metrics**
+#### **Enhanced Real-time Metrics with Conversation Intelligence**
 
 - **Chat Performance**: Volume trends, response times, satisfaction scores
+- **Conversation Quality**: Intent resolution rates, follow-up pattern analysis, solution effectiveness
+- **Frustration Analytics**: Real-time sentiment monitoring, escalation prediction, tone adaptation tracking
 - **WebSocket Analytics**: Connection count, message throughput, error rates
 - **AI Effectiveness**: Knowledge base hit rates, intent confidence, LLM fallback frequency
-- **User Experience**: Session analytics, feature usage, engagement patterns
+- **User Experience**: Session analytics, feature usage, engagement patterns, conversation flow analysis
 - **System Health**: API performance, database metrics, connection health tracking
 
-#### **Visual Dashboards**
+#### **Business Intelligence Dashboard**
 
 - **Interactive Charts**: Gradient-filled area charts, radial progress indicators
+- **Conversation Flow Analytics**: Follow-up detection trends, tone adaptation effectiveness
+- **Escalation Prediction**: Proactive identification of conversations needing human intervention
+- **Resolution Rate Tracking**: Intent-specific success rates and failure pattern analysis
 - **WebSocket Monitoring**: Real-time connection analytics and performance metrics
-- **Business KPIs**: Customer satisfaction, resolution rates, agent efficiency
+- **Business KPIs**: Customer satisfaction, resolution rates, agent efficiency, frustration mitigation
 - **Connection Analytics**: WebSocket performance monitoring and error tracking
 
-## 🔄 Enhanced Data Flow
+## 🔄 Enhanced Data Flow with Conversational Intelligence
 
-### **WebSocket Message Processing Pipeline**
+### **Enhanced WebSocket Message Processing with Follow-up Detection**
 
 ```mermaid
 graph TD
     A[User Message] --> B[WebSocket Connection Manager]
     B --> C[Client Authentication & Tracking]
     C --> D[Message Validation & Parsing]
-    D --> E[Enhanced Intent Classification]
-    E --> F{Confidence Check}
-    F -->|High Confidence| G[Agent Selection]
-    F -->|Low Confidence| H[Local Intent Service]
-    H --> G
-    G -->|Technical Issues| I[Tech Support Agent]
-    G -->|Account/Billing| J[Billing Agent]
-    G -->|General Questions| K[General Agent]
-    I --> L[Enhanced Semantic Search]
-    J --> L
-    K --> L
-    L --> M{Knowledge Base Match}
-    M -->|High Confidence| N[KB Response]
-    M -->|Low Confidence| O[LLM Fallback]
-    N --> P[Response Enrichment & Metadata]
-    O --> P
-    P --> Q[Analytics Logging]
-    Q --> R[WebSocket Response Delivery]
-    R --> S[Connection Health Check]
-    S --> T[User Interface Update]
-    T --> U[Connection Status Update]
+    D --> E[Follow-up Pattern Detection]
+    E --> F{Is Follow-up?}
+    F -->|Yes| G[Retrieve Conversation Context]
+    F -->|No| H[Enhanced Intent Classification]
+    G --> I[Calculate Frustration Level]
+    H --> J{Confidence Check}
+    J -->|High Confidence| K[Agent Selection]
+    J -->|Low Confidence| L[Local Intent Service]
+    L --> K
+    I --> M[Determine Adaptive Tone]
+    M --> N[Context-Aware Agent Selection]
+    K -->|Technical Issues| O[Tech Support Agent]
+    K -->|Account/Billing| P[Billing Agent]
+    K -->|General Questions| Q[General Agent]
+    N --> R[Enhanced Semantic Search with Context]
+    O --> R
+    P --> R
+    Q --> R
+    R --> S{Knowledge Base Match}
+    S -->|High Confidence| T[Generate Contextual Response]
+    S -->|Low Confidence| U[LLM Fallback with Context]
+    T --> V[Apply Adaptive Tone]
+    U --> V
+    V --> W[Response Enrichment & Metadata]
+    W --> X[Conversation Metrics Tracking]
+    X --> Y[Escalation Prediction Analysis]
+    Y --> Z[WebSocket Response Delivery]
+    Z --> AA[Connection Health Check]
+    AA --> BB[User Interface Update]
+    BB --> CC[Business Intelligence Logging]
 ```
 
-### **Enhanced WebSocket Connection Lifecycle**
+### **Enhanced Conversational Flow Lifecycle**
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant CM as Connection Manager
+    participant WS as WebSocket Handler
+    participant CF as Conversation Flow
+    participant AI as AI Agent System
+    participant DB as Database
+    participant M as Metrics
+
+    C->>CM: Connection Request
+    CM->>CM: Generate Client ID
+    CM->>WS: Accept Connection
+    WS->>CM: Register Client
+    CM->>M: Log Connection Event
+
+    loop Heartbeat
+        WS->>C: Ping
+        C->>WS: Pong
+        WS->>CM: Update Activity
+    end
+
+    C->>WS: Send Message
+    WS->>CF: Analyze Message
+    CF->>CF: Detect Follow-up Patterns
+    CF->>CF: Calculate Frustration Level
+    CF->>CF: Determine Adaptive Tone
+    CF->>AI: Process with Context
+    AI->>DB: Knowledge Base Search
+    AI->>CF: Return Response
+    CF->>CF: Apply Tone Adaptation
+    CF->>M: Track Conversation Metrics
+    CF->>WS: Enhanced Response
+    WS->>C: Send Response
+    WS->>M: Log Business Intelligence
+
+    Note over C,M: Escalation Handling
+    CF-->>CF: High Frustration Detected
+    CF->>WS: Offer Human Agent
+    WS->>C: Escalation Response
+    CF->>M: Log Escalation Event
+
+    Note over C,M: Error Handling
+    WS-->>CM: Connection Error
+    CM->>CM: Cleanup Client
+    CM->>M: Log Disconnection
+```
+
+### **Legacy WebSocket Connection Lifecycle**
 
 ```mermaid
 sequenceDiagram

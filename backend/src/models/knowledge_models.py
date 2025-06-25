@@ -5,6 +5,7 @@ from pgvector.sqlalchemy import Vector
 import uuid
 from ..config.database import Base
 
+
 class KnowledgeBase(Base):
     __tablename__ = "knowledge_base"
 
@@ -18,4 +19,4 @@ class KnowledgeBase(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     def __repr__(self):
-        return f"<KnowledgeBase(id={self.id}, title='{self.title}', category='{self.category}')>" 
+        return f"<KnowledgeBase(id={self.id}, title='{self.title}', category='{self.category}')>"

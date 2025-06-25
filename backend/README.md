@@ -12,19 +12,25 @@ This backend powers an agentic AI customer support demo for an Xfinity-style tel
 - **Comprehensive Error Handling**: Graceful fallbacks that never break chat flow
 - **Real-time Monitoring**: Connection statistics and health tracking
 
-### **🤖 Intelligent AI System**
+### **🤖 Intelligent AI System with Enhanced Conversational Flow**
 
 - **Multi-Agent Architecture**: Specialized agents (Tech Support, Billing, General) with intent-based routing
 - **Enhanced Natural Language Understanding**: Advanced intent classification with confidence scoring
+- **Human-Centered Conversational Flow**: Natural follow-up handling with "that didn't work" responses
+- **Adaptive Tone System**: Context-aware empathetic responses based on frustration levels (5 different tones)
+- **Intelligent Frustration Detection**: Monitors sentiment, caps lock, punctuation patterns for proactive escalation
 - **Local Intent Service**: Fast, reliable intent classification with cloud fallback
-- **Smart Knowledge Base**: Semantic search with normalized keyword processing
+- **Smart Knowledge Base**: Semantic search with normalized keyword processing and solution tracking
 - **Smart Fallback**: OpenAI GPT integration for complex queries beyond knowledge base
 
-### **📊 Analytics & Monitoring**
+### **📊 Analytics & Business Intelligence**
 
 - **Real-time Metrics**: Chat volume, response times, satisfaction scores, intent distribution
+- **Conversation Quality Tracking**: Intent resolution rates, frustration level monitoring, tone adaptation analytics
+- **Follow-up Pattern Analysis**: Tracks "that didn't work" scenarios and solution effectiveness
+- **Business Intelligence Dashboard**: Real-time conversation flow analysis and escalation predictions
 - **WebSocket Metrics**: Connection count, message throughput, error rates
-- **Prometheus Integration**: Production-ready metrics at `/metrics` endpoint
+- **Prometheus Integration**: Production-ready metrics at `/metrics` endpoint with conversation-specific tracking
 - **Database Monitoring**: PostgreSQL health, connection pools, query performance
 - **Connection Health Tracking**: Real-time WebSocket connection monitoring and performance
 
@@ -145,12 +151,16 @@ docker run -p 8000:8000 --env-file .env xfinity-agent-backend
 - `GET /api/v1/knowledge/categories` — List all categories by agent
 - `POST /api/v1/knowledge/feedback` — Submit knowledge base feedback
 
-### **Analytics & Insights**
+### **Analytics & Business Intelligence**
 
 - `GET /api/v1/analytics/overview` — Comprehensive analytics summary with WebSocket metrics
 - `GET /api/v1/analytics/metrics` — Detailed metrics with time ranges
 - `GET /api/v1/analytics/intents` — Intent distribution and confidence trends
 - `GET /api/v1/analytics/satisfaction` — User satisfaction scores
+- `GET /api/v1/metrics/conversation-quality` — Conversation quality metrics and insights
+- `GET /api/v1/metrics/conversation-flow/{conversation_id}` — Individual conversation flow analysis
+- `GET /api/v1/metrics/intent-resolution-rate` — Business intelligence on intent resolution patterns
+- `GET /api/v1/metrics/escalation-predictions` — Predictive analytics for conversation escalation
 
 ### **Feedback & Quality**
 
@@ -343,7 +353,224 @@ TECHNICAL_PATTERNS = [
 ]
 ```
 
+## 🎯 Enhanced Conversational Flow Services
+
+### **Conversation State Management**
+
+```python
+from enum import Enum
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+class ConversationState(Enum):
+    INITIAL = "initial"
+    FOLLOW_UP = "follow_up"
+    FRUSTRATED = "frustrated"
+    ESCALATION = "escalation"
+    RESOLVED = "resolved"
+
+@dataclass
+class ConversationContext:
+    conversation_id: str
+    user_id: str
+    state: ConversationState
+    attempt_count: int
+    previous_solutions: List[str]
+    frustration_level: int  # 0-10 scale
+    tone: str
+    follow_up_detected: bool
+```
+
+### **Enhanced Chat Service with Follow-up Handling**
+
+```python
+class EnhancedChatService:
+    """
+    Enhanced chat service with human-centered conversational flow.
+
+    Features:
+    - Follow-up pattern detection ("that didn't work", "still not working")
+    - Adaptive tone system (5 different empathy levels)
+    - Frustration level monitoring (0-10 scale)
+    - Context-aware response generation
+    - Solution effectiveness tracking
+    """
+
+    def __init__(self):
+        self.follow_up_patterns = [
+            r"(?i)that didn'?t work",
+            r"(?i)still not working",
+            r"(?i)it'?s still broken",
+            r"(?i)try something else",
+            r"(?i)need another solution"
+        ]
+
+        self.frustration_indicators = [
+            r"[A-Z]{3,}",  # Caps lock
+            r"[!]{2,}",    # Multiple exclamation marks
+            r"[?]{2,}",    # Multiple question marks
+            r"(?i)frustrated|annoyed|angry"
+        ]
+
+    async def handle_message(self, message: str, context: ConversationContext) -> ChatResponse:
+        """Enhanced message handling with follow-up detection"""
+
+        # Detect follow-up patterns
+        is_follow_up = self.detect_follow_up(message)
+
+        # Calculate frustration level
+        frustration_level = self.calculate_frustration_level(message, context)
+
+        # Determine appropriate tone
+        tone = self.determine_tone(context, is_follow_up, frustration_level)
+
+        # Generate contextual response
+        response = await self.generate_response(message, context, tone, is_follow_up)
+
+        return response
+
+    def detect_follow_up(self, message: str) -> bool:
+        """Detect if message is a follow-up indicating previous solution failed"""
+        return any(re.search(pattern, message) for pattern in self.follow_up_patterns)
+
+    def calculate_frustration_level(self, message: str, context: ConversationContext) -> int:
+        """Calculate frustration level on 0-10 scale"""
+        frustration = 0
+
+        # Check for caps lock usage
+        caps_ratio = sum(1 for c in message if c.isupper()) / len(message) if message else 0
+        if caps_ratio > 0.3:
+            frustration += 3
+
+        # Check for frustration indicators
+        for pattern in self.frustration_indicators:
+            if re.search(pattern, message):
+                frustration += 2
+
+        # Factor in attempt count
+        frustration += min(context.attempt_count, 3)
+
+        return min(frustration, 10)
+
+    def determine_tone(self, context: ConversationContext, is_follow_up: bool, frustration_level: int) -> str:
+        """Determine appropriate conversational tone based on context"""
+        if frustration_level >= 8:
+            return "empathetic_escalation"
+        elif frustration_level >= 6:
+            return "empathetic_supportive"
+        elif is_follow_up or context.attempt_count >= 2:
+            return "patient_alternative"
+        elif context.attempt_count >= 1:
+            return "understanding_adaptive"
+        else:
+            return "helpful_friendly"
+```
+
+### **Business Intelligence Metrics Service**
+
+```python
+class ConversationMetricsCollector:
+    """
+    Comprehensive conversation analytics for business intelligence.
+
+    Tracks:
+    - Intent resolution rates over time
+    - Follow-up pattern analysis
+    - Solution effectiveness metrics
+    - Frustration level trends
+    - Tone adaptation analytics
+    - Escalation prediction indicators
+    """
+
+    def __init__(self):
+        self.metrics_store = {}
+        self.conversation_outcomes = {}
+
+    def track_conversation_flow(self, conversation_id: str, metrics: Dict):
+        """Track conversation flow metrics for business analysis"""
+
+        self.metrics_store[conversation_id] = {
+            "processing_time": metrics.get("processing_time"),
+            "is_follow_up": metrics.get("is_follow_up", False),
+            "frustration_level": metrics.get("frustration_level", 0),
+            "attempt_count": metrics.get("attempt_count", 1),
+            "tone_used": metrics.get("tone", "helpful_friendly"),
+            "intent": metrics.get("intent"),
+            "agent_type": metrics.get("agent_type"),
+            "timestamp": datetime.utcnow()
+        }
+
+    def calculate_intent_resolution_rate(self, time_window_days: int = 7) -> Dict[str, float]:
+        """Calculate resolution rates by intent over time window"""
+
+        cutoff_date = datetime.utcnow() - timedelta(days=time_window_days)
+
+        resolution_data = {}
+        for conv_id, metrics in self.metrics_store.items():
+            if metrics["timestamp"] >= cutoff_date:
+                intent = metrics["intent"]
+                if intent not in resolution_data:
+                    resolution_data[intent] = {"total": 0, "resolved": 0}
+
+                resolution_data[intent]["total"] += 1
+                if not metrics["is_follow_up"]:  # First attempt resolution
+                    resolution_data[intent]["resolved"] += 1
+
+        return {
+            intent: data["resolved"] / data["total"] if data["total"] > 0 else 0
+            for intent, data in resolution_data.items()
+        }
+
+    def predict_escalation_likelihood(self, conversation_id: str) -> Dict[str, Any]:
+        """Predict likelihood of conversation requiring human escalation"""
+
+        if conversation_id not in self.metrics_store:
+            return {"likelihood": 0, "confidence": 0, "factors": []}
+
+        metrics = self.metrics_store[conversation_id]
+
+        # Calculate escalation likelihood based on factors
+        escalation_score = 0
+        factors = []
+
+        # High frustration indicator
+        if metrics["frustration_level"] >= 7:
+            escalation_score += 0.4
+            factors.append("high_frustration")
+
+        # Multiple attempts
+        if metrics["attempt_count"] >= 3:
+            escalation_score += 0.3
+            factors.append("multiple_attempts")
+
+        # Follow-up pattern
+        if metrics["is_follow_up"]:
+            escalation_score += 0.2
+            factors.append("solution_failure")
+
+        # Complex intent patterns
+        if metrics["intent"] in ["technical_complex", "billing_dispute"]:
+            escalation_score += 0.1
+            factors.append("complex_intent")
+
+        return {
+            "likelihood": min(escalation_score, 1.0),
+            "confidence": 0.85,  # Model confidence
+            "factors": factors,
+            "recommendation": "offer_human_agent" if escalation_score > 0.6 else "continue_ai"
+        }
+```
+
 ## 🚀 Recent Enhancements
+
+### **Enhanced Conversational Flow (Latest)**
+
+- ✅ Human-centered follow-up handling with "that didn't work" detection
+- ✅ Adaptive tone system with 5 empathy levels (helpful → empathetic escalation)
+- ✅ Intelligent frustration detection using text analysis and conversation context
+- ✅ Business intelligence metrics for conversation quality and resolution rates
+- ✅ Proactive escalation prediction to identify customers needing human help
+- ✅ Context-aware response generation preserving conversation history
 
 ### **WebSocket Reliability Improvements**
 

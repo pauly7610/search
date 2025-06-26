@@ -7,7 +7,7 @@ export const useChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [agentStatus, setAgentStatus] = useState("available");
 
-  const { socket, isConnected, send, getConnectionState, clientId } = useWebSocket("ws://localhost:8000/api/v1/chat/ws");
+  const { socket, isConnected, send, getConnectionState, clientId } = useWebSocket();
 
   useEffect(() => {
     if (!socket) return;
@@ -17,22 +17,16 @@ export const useChat = () => {
         const data = JSON.parse(event.data);
         console.log('Received WebSocket message:', data);
         
-        // Handle heartbeat pong messages
-        if (data.type === 'pong') {
-          console.log('Heartbeat pong received');
-          return;
-        }
-        
-        // Handle ping messages (respond with pong)
+        // Handle heartbeat ping messages (respond with pong)
         if (data.type === 'ping') {
           console.log('Heartbeat ping received, sending pong');
           send({ type: 'pong' });
           return;
         }
         
-        // Handle pong messages (update heartbeat tracking)
+        // Handle heartbeat pong messages
         if (data.type === 'pong') {
-          console.log('Heartbeat pong received in useChat');
+          console.log('Heartbeat pong received');
           return;
         }
         
@@ -48,6 +42,16 @@ export const useChat = () => {
         if (data.role && data.content) {
           const message: Message = data as Message;
           console.log('Processing chat message:', message);
+          
+          // Log enhanced conversational context if present
+          if (message.conversation_flow || message.is_follow_up) {
+            console.log('Enhanced conversation context:', {
+              conversation_flow: message.conversation_flow,
+              is_follow_up: message.is_follow_up,
+              frustration_level: message.intent_data?.frustration_level
+            });
+          }
+          
           setMessages((prev) => [...prev, message]);
           setIsTyping(false);
           setAgentStatus("available");

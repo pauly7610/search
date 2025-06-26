@@ -63,14 +63,30 @@ class AgentAuthManager:
     """
 
     def __init__(self):
+        self.toolset = None
+        self.entity_id = "default"
+
         if agent_auth_settings.composio_api_key:
-            self.toolset = ComposioToolSet(api_key=agent_auth_settings.composio_api_key)
+            try:
+                self.toolset = ComposioToolSet(
+                    api_key=agent_auth_settings.composio_api_key
+                )
+                logger.info("Composio toolset initialized successfully")
+            except Exception as e:
+                logger.warning(
+                    f"Failed to initialize Composio toolset: {str(e)}. "
+                    "AgentAuth features will be disabled. This might be due to "
+                    "Composio service issues or network connectivity problems."
+                )
+                self.toolset = None
         else:
-            self.toolset = None
             logger.warning(
                 "Composio API key not provided. AgentAuth features will be limited."
             )
-        self.entity_id = "default"
+
+    def is_available(self) -> bool:
+        """Check if AgentAuth is available and properly initialized."""
+        return self.toolset is not None
 
     async def get_auth_url(self, app_name: str, user_id: str) -> Dict[str, Any]:
         """

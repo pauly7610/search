@@ -16,7 +16,7 @@ class WebSocketService {
   connect() {
     if (this.socket?.readyState === WebSocket.OPEN) return
 
-    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/api/v1/chat/ws'
+    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://127.0.0.1:8000/api/v1/chat/ws'
     const fullUrl = `${wsUrl}/${this.clientId}`
     
     this.socket = new WebSocket(fullUrl)

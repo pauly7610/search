@@ -187,6 +187,7 @@ async def get_current_user_info(
         "user": current_user,
         "authenticated": True,
         "agent_auth_enabled": agent_auth_settings.agent_auth_enabled,
+        "agent_auth_available": agent_auth_manager.is_available(),
     }
 
 
@@ -201,6 +202,12 @@ async def initiate_app_connection(
     external services like GitHub, Gmail, Slack, etc.
     """
     try:
+        if not agent_auth_manager.is_available():
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="AgentAuth service is currently unavailable. Please try again later.",
+            )
+
         if app_name not in agent_auth_settings.supported_apps:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -242,6 +249,12 @@ async def oauth_callback(
     the connection setup in AgentAuth.
     """
     try:
+        if not agent_auth_manager.is_available():
+            return RedirectResponse(
+                url="/dashboard?error=service_unavailable",
+                status_code=status.HTTP_302_FOUND,
+            )
+
         if not connection_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

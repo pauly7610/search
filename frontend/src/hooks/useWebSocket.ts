@@ -9,7 +9,7 @@ interface UseWebSocketOptions {
 }
 
 export const useWebSocket = (
-  url: string = 'ws://localhost:8000/api/v1/chat/ws',
+  url: string = import.meta.env.VITE_WS_URL || 'ws://127.0.0.1:8000/api/v1/chat/ws',
   options: UseWebSocketOptions = {}
 ) => {
   const {
